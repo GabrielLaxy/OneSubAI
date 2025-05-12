@@ -8,6 +8,7 @@ import Login from './Login';
 import Register from './Register';
 import RecOption from './RecOption';
 import Config from './Config';
+import RecScreen from './RecScreen';
 import theme from '../theme';
 
 const Tab = createBottomTabNavigator();
@@ -16,6 +17,8 @@ const Stack = createStackNavigator();
 const logo = require('../../assets/logo.png');
 
 const icon = require('../../assets/dog.png');
+
+const text_logo = require('../../assets/text_logo.png');
 
 const { width, height } = Dimensions.get('window');
 
@@ -28,16 +31,16 @@ function TabRoutes({ navigation }: any) {
 		headerShown: true,
 		headerStyle: {
 			backgroundColor: theme.colors.primary,
-			elevation:0,
+			elevation: 0,
 			shadowOpacity: 0,
 		},
 		headerTintColor: theme.colors.accent,
-		headerTitle: '',
-		headerLeft: () => (
+		headerTitleAlign: "center" as	 "center",
+		headerTitle: () => (
 			<Image
-				source={logo}
+				source={text_logo}
 				style={{
-					width: width * 0.1,
+					width: width * 0.28,
 					height: undefined,
 					aspectRatio: 1,
 					marginLeft: 10,
@@ -45,6 +48,7 @@ function TabRoutes({ navigation }: any) {
 				resizeMode="contain"
 			/>
 		),
+	
 		headerRight: () => (
 			<View>
 				<TouchableOpacity
@@ -55,7 +59,7 @@ function TabRoutes({ navigation }: any) {
 					<Image
 						source={icon}
 						style={{
-							width: width * 0.12,
+							width: width * 0.11,
 							height: undefined,
 							aspectRatio: 1,
 							marginRight: 10,
@@ -96,6 +100,13 @@ export default function Routes() {
 				name="Config"
 				component={Config}
 				options={StackHeaderOp}
+			/>
+			<Stack.Screen
+				name="RecScreen"
+				component={RecScreen}
+				options={{
+					headerShown: false,
+				}}
 			/>
 		</Stack.Navigator>
 	);
