@@ -2,9 +2,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Image, Dimensions, View, TouchableOpacity } from 'react-native';
 
-import Home from './Home';
-import Subs from './Subs';
-import Login from './Login';
+import Home from './home';
+import Subs from './subs';
+import Login from './login';
 import Register from './Register';
 import RecOption from './RecOption';
 import Config from './Config';
