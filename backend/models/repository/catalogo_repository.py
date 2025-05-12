@@ -45,13 +45,13 @@ class CatalogoRepository:
 
         for elem in data: print(elem)
 
-    # def edit_registry(self,filter, name) -> None:
-    #     collection = self.__db_connection.get_collection(self.__collection_name)
-    #     data = collection.update_one(
-    #         filter, 
-    #         { "$set": { "nome": name } } # Campo de edição
-    #     )
-    #     print(data.modified_count)
+    def edit_registry(self,filter, name) -> None:
+        collection = self.__db_connection.get_collection(self.__collection_name)
+        data = collection.update_one(
+            filter, 
+            { "$set": { "nome": name } } # Campo de edição
+        )
+        print(data.modified_count)
 
     # def edit_many_increment(self, filter, num) -> None:
     #     collection = self.__db_connection.get_collection(self.__collection_name)

@@ -2,6 +2,8 @@ from models.connection_options.connection import DBConnectionHandler
 from models.repository.usuarios_repository import UsuariosRepository
 from models.repository.planos_repository import PlanosRepository
 from models.repository.catalogo_repository import CatalogoRepository
+from models.repository.catalogo_generos_repository import CatalogoGenerosRepository
+from models.repository.catalogo_overview_repository import CatalogoOverviewRepository
 
 
 db_handle = DBConnectionHandler()
@@ -11,7 +13,8 @@ db_connection = db_handle.get_db_connection()
 usuarios_repository = UsuariosRepository(db_connection)
 planos_repository = PlanosRepository(db_connection)
 catalogo_repository = CatalogoRepository(db_connection)
-
+catalogo_generos_repository = CatalogoGenerosRepository(db_connection)
+catalogo_overview_repository = CatalogoOverviewRepository(db_connection)
 
 # passageiro = {
 #     "userId": "4",
@@ -191,15 +194,17 @@ catalogo_repository = CatalogoRepository(db_connection)
 # funcionarios_repository.insert_list_of_documents(funcionarios)
 # funcionarios_repository.select_many_order({"nome": "João"})
 
-usuario = {
-    "userId": "1",
-    "nome": "Taynah",
-    "login": "taynah.saito@gmail.com",
-    "senha_hash": "xxxx",
-    "plano_id":
-    ["1",
-    "2",
-    ],
-}
+# usuario = {
+#     "userId": "1",
+#     "nome": "Taynah",
+#     "login": "taynah.saito@gmail.com",
+#     "senha_hash": "xxxx",
+#     "plano_id":
+#     ["1",
+#     "2",
+#     ],
+# }
 
-usuarios_repository.insert_document(usuario)
+# usuarios_repository.insert_document(usuario)
+
+catalogo_generos_repository.edit_registry({"Animação": 1}, 3)

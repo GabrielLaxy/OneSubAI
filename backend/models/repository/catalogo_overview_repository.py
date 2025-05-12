@@ -1,8 +1,8 @@
 from typing import Dict, List
 
-class PlanosRepository:
+class CatalogoOverviewRepository:
     def __init__(self, db_connection)   -> None:
-        self.__collection_name = "planos"
+        self.__collection_name = "catalogo_overview"
         self.__db_connection = db_connection
 
     def insert_document(self, document: Dict) -> Dict:
@@ -33,33 +33,33 @@ class PlanosRepository:
     
     def select_if_property_exists(self) -> None:
         collection = self.__db_connection.get_collection(self.__collection_name)
-        data = collection.find({ "tipo": { "$contains": "premium" } })
+        data = collection.find({ "cpf": { "$exists": True } })
         for elem in data: print(elem)
 
     def select_many_order(self, filter):
         collection = self.__db_connection.get_collection(self.__collection_name)
         data = collection.find(
             filter, 
-            {"userId": 1, "image_path": 1} # Opcoes de retorno
-        ).sort([("userId", 1)])
+            {"_id": 1} # Opcoes de retorno
+        ).sort([("_id", 1)])
 
         for elem in data: print(elem)
 
     def edit_registry(self,filter, name) -> None:
         collection = self.__db_connection.get_collection(self.__collection_name)
         data = collection.update_one(
-            filter, #Filtro
+            filter, 
             { "$set": { "nome": name } } # Campo de edição
         )
         print(data.modified_count)
 
-    def edit_many_increment(self, filter, num) -> None:
-        collection = self.__db_connection.get_collection(self.__collection_name)
-        data = collection.update_many(
-            filter, #Filtro
-            { "$inc": { "idade": num } }
-        )
-        print(data.modified_count)
+    # def edit_many_increment(self, filter, num) -> None:
+    #     collection = self.__db_connection.get_collection(self.__collection_name)
+    #     data = collection.update_many(
+    #         filter, 
+    #         { "$inc": { "idade": num } }
+    #     )
+    #     print(data.modified_count)
 
     def delete_registry(self, filter) -> None:
         collection = self.__db_connection.get_collection(self.__collection_name)
