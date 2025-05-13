@@ -14,6 +14,7 @@ const theme = {
 		accent: '#FFFFFF', //branco
 		background: '#F0F0F0', //branco meio cinza
 		text: '#000000', //preto
+		placeholder: '#A7A7A7', //cinza
 	},
 };
 
