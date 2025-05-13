@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
 import  Theme  from './src/theme';
 import { PaperProvider } from 'react-native-paper';
-import Routes from './src/screens/Routes';
+import Routes from './src/screens/routes';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { useFonts } from 'expo-font';

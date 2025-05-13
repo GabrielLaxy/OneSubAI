@@ -2,10 +2,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Image, Dimensions, View, TouchableOpacity } from 'react-native';
 
-import Home from './Home';
-import Subs from './Subs';
-import Login from './Login';
-import Register from './Register';
+import Home from './home';
+import Subs from './subs';
+import Login from './login';
+import Register from './register';
 import RecOption from './RecOption';
 import Config from './Config';
 import RecScreen from './RecScreen';
@@ -74,7 +74,7 @@ function TabRoutes({ navigation }: any) {
 		),
 	};
 	return (
-		<Tab.Navigator initialRouteName="Home">
+		<Tab.Navigator initialRouteName="Home" screenOptions={{animation: "shift"}}>
 			<Tab.Screen name="RecOptions" component={RecOption} />
 			<Tab.Screen name="Home" component={Home} options={TabHeaderOp} />
 			<Tab.Screen name="Subs" component={Subs} />
