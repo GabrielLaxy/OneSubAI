@@ -1,10 +1,13 @@
 from pymongo import MongoClient
-from .mongodb_configs import mongo_db_infos
+from dotenv import load_dotenv
+
+load_dotenv()
+import os
 
 class DBConnectionHandler:
     def __init__(self) -> None:
-        self.__connection_string = "mongodb+srv://admin:1234512345@cluster0.bhqtr5h.mongodb.net/"
-        self.__database_name = mongo_db_infos["DB_NAME"]
+        self.__connection_string = os.getenv("MONGO_URI")
+        self.__database_name = os.getenv("DB_NAME")
         self.__client = None
         self.__db_connection = None
 

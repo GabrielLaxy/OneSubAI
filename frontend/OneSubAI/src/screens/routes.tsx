@@ -184,6 +184,13 @@ export default function Routes() {
 					headerShown: false,
 				}}
 			/>
+			<Stack.Screen
+				name="RecOptions"
+				component={RecOption}
+				options={{
+					headerShown: true,
+				}}
+			/>
 		</Stack.Navigator>
 	);
 }
