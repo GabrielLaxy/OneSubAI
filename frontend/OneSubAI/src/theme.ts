@@ -15,6 +15,7 @@ const theme = {
 		background: '#F0F0F0', //branco meio cinza
 		text: '#000000', //preto
 		placeholder: '#A7A7A7', //cinza
+		labels: '#7D7D7D' //cinza claro
 	},
 };
 
