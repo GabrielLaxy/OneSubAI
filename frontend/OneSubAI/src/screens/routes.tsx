@@ -6,6 +6,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import HeaderOp from '../components/recScreensHeader';
 
 import styles from '../styles/tabBarStyle';
 
@@ -180,9 +181,7 @@ export default function Routes() {
 			<Stack.Screen
 				name="RecScreen"
 				component={RecScreen}
-				options={{
-					headerShown: false,
-				}}
+				options={HeaderOp}
 			/>
 			<Stack.Screen
 				name="RecOptions"

@@ -6,7 +6,7 @@ import styles from '../styles/homeStyle';
 export default function Home() {
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
-			<StatusBar animated={true} style="light" />
+			<StatusBar animated={true} style="auto" />
 			<View style={styles.container}>
 				<Text>Home</Text>
 			</View>

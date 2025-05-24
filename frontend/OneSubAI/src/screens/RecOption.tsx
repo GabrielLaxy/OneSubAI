@@ -5,7 +5,7 @@ export default function RecOption({ navigation }: any) {
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<View>
-				<Button title="Leva para tela do tinder" onPress={() => navigation.navigate('Reg')} />
+				<Button title="Leva para tela do tinder" onPress={() => navigation.navigate('RecScreen')} />
 			</View>
 		</SafeAreaView>
 	);
