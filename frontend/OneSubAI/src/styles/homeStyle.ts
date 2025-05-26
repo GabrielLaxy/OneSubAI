@@ -5,7 +5,7 @@ const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: theme.colors.background,
+		backgroundColor: theme.colors.accent,
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -18,12 +18,12 @@ const styles = StyleSheet.create({
 	},
 
 	secondLayer: {
-		backgroundColor: theme.colors.background,
+		backgroundColor: theme.colors.accent,
 		marginTop: -40,
 		borderTopLeftRadius: 25,
 		borderTopRightRadius: 25,
 		padding: 20,
-		minHeight: height * 0.8, // ou o valor que preferir
+		minHeight: height * 0.8,
 	},
 
 	title: {
@@ -40,19 +40,29 @@ const styles = StyleSheet.create({
 
 	dashboard: {
 		borderRadius: 20,
-		borderColor: theme.colors.labels,
+		borderColor: theme.colors.dashboardBorder,
 		borderWidth: 1,
-		padding: 20,
-		gap: 50,
+		paddingBottom: 20
 	},
 
 	dashboardParagraph: {
 		fontSize: 15,
+		color: theme.colors.dashboardBorder
 	},
 
 	dashboardTitle: {
 		fontSize: 30,
-		fontWeight: 700
+		fontWeight: 700,
+	},
+
+	dashboardLabels: {
+		gap: 50,
+		paddingBottom: 40,
+		paddingHorizontal: 20
+	},
+
+	dashboardTexts: {
+		padding: 20,
 	},
 
 	graphicLabels: {
@@ -65,7 +75,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 6,
 		paddingHorizontal: 12,
 		borderRadius: 20,
-		borderColor: theme.colors.labels,
+		borderColor: theme.colors.dashboardBorder,
 		borderWidth: 1,
 	},
 

@@ -4,6 +4,7 @@ import {
 	Text,
 	ScrollView,
 	TouchableOpacity,
+	TouchableWithoutFeedback,
 	Animated,
 	Easing,
 } from 'react-native';
@@ -15,6 +16,7 @@ type FilterType = 'all' | 'year' | 'months' | 'weeks' | 'days';
 
 export default function Home() {
 	const [filter, setFilter] = useState<FilterType>('all');
+	const [selectedBarIndex, setSelectedBarIndex] = useState<number | null>(null);
 
 	const data: Record<FilterType, number[]> = {
 		all: [50, 80, 40, 95, 70],
@@ -42,67 +44,84 @@ export default function Home() {
 				useNativeDriver: false,
 			}).start();
 		});
+		setSelectedBarIndex(null); // reset ao mudar o filtro
 	}, [filter]);
 
 	return (
-		<View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+		<View style={{ flex: 1, backgroundColor: theme.colors.accent }}>
 			<StatusBar animated={true} style="light" />
 			<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 				<View style={styles.fakeHeader} />
 
 				<View style={styles.secondLayer}>
 					<View style={styles.dashboard}>
-						<Text style={styles.dashboardParagraph}>Dashboard</Text>
-						<Text style={styles.dashboardTitle}>Expensives</Text>
-						{/* Labels */}
-						<View style={styles.graphic}>
-							{['all', 'year', 'months', 'weeks', 'days'].map(item => (
-								<TouchableOpacity
-									key={item}
-									onPress={() => setFilter(item as FilterType)}
-									style={[
-										styles.labelBase,
-										{
-											backgroundColor:
-												filter === item
-													? theme.colors.primary
-													: theme.colors.background,
-										},
-									]}
-								>
-									<Text
+						<View style={styles.dashboardTexts}>
+							<Text style={styles.dashboardParagraph}>Dashboard</Text>
+							<Text style={styles.dashboardTitle}>Expensives</Text>
+						</View>
+						<View style={styles.dashboardLabels}>
+							{/* Labels */}
+							<View style={styles.graphic}>
+								{['all', 'year', 'months', 'weeks', 'days'].map(item => (
+									<TouchableOpacity
+										key={item}
+										onPress={() => setFilter(item as FilterType)}
 										style={[
-											styles.labelText,
+											styles.labelBase,
 											{
-												color:
+												backgroundColor:
 													filter === item
-														? theme.colors.accent
-														: theme.colors.labels,
-												textTransform: 'capitalize',
+														? theme.colors.primary
+														: theme.colors.accent,
 											},
 										]}
 									>
-										{item}
-									</Text>
-								</TouchableOpacity>
-							))}
+										<Text
+											style={[
+												styles.labelText,
+												{
+													color:
+														filter === item
+															? theme.colors.accent
+															: theme.colors.labels,
+												},
+											]}
+										>
+											{item}
+										</Text>
+									</TouchableOpacity>
+								))}
+							</View>
 						</View>
-						{/* Gráfico */}
-						<View style={[styles.graphic, { height: maxBarHeight }]}>
-							{currentData.map((_, index) => (
-								<View key={index} style={styles.graphicBars}>
-									<Animated.View
-										style={[
-											styles.bars,
-											{
-												height: animatedValues[index],
-											},
-										]}
-									/>
-									<Text style={styles.months}>{labels[index]}</Text>
-								</View>
-							))}
-						</View>
+
+						{/* Gráfico com toque fora das barras */}
+						<TouchableWithoutFeedback onPress={() => setSelectedBarIndex(null)}>
+							<View style={[styles.graphic, { height: maxBarHeight }]}>
+								{currentData.map((_, index) => (
+									<TouchableOpacity
+										key={index}
+										activeOpacity={0.8}
+										style={styles.graphicBars}
+										onPress={() => setSelectedBarIndex(index)}
+									>
+										<Animated.View
+											style={[
+												styles.bars,
+												{
+													height: animatedValues[index],
+													backgroundColor:
+														selectedBarIndex === null ||
+														selectedBarIndex === index
+															? theme.colors.primary
+															: '#D9D9D9',
+												},
+											]}
+										/>
+										<Text style={styles.months}>{labels[index]}</Text>
+									</TouchableOpacity>
+								))}
+							</View>
+						</TouchableWithoutFeedback>
 					</View>
 				</View>
 			</ScrollView>
