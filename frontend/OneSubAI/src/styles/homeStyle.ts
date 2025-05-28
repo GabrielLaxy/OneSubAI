@@ -1,20 +1,11 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 import theme from '../theme';
 
-const { width, height } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
-	container: {
-		backgroundColor: theme.colors.accent,
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-
 	fakeHeader: {
 		backgroundColor: theme.colors.primary,
-		width: width,
-		height: 150, // altura maior para simular o fundo roxo
+		width: '100%',
+		height: 150,
 	},
 
 	secondLayer: {
@@ -23,49 +14,37 @@ const styles = StyleSheet.create({
 		borderTopLeftRadius: 25,
 		borderTopRightRadius: 25,
 		padding: 20,
-		minHeight: height * 0.8,
-	},
-
-	title: {
-		fontSize: 24,
-		fontWeight: 'bold',
-		color: theme.colors.text,
-		marginBottom: 10,
-	},
-
-	paragraph: {
-		fontSize: 16,
-		color: theme.colors.text,
+		minHeight: '80%',
 	},
 
 	dashboard: {
 		borderRadius: 20,
 		borderColor: theme.colors.dashboardBorder,
 		borderWidth: 1,
-		paddingBottom: 20
-	},
-
-	dashboardParagraph: {
-		fontSize: 15,
-		color: theme.colors.dashboardBorder
-	},
-
-	dashboardTitle: {
-		fontSize: 30,
-		fontWeight: 700,
-	},
-
-	dashboardLabels: {
-		gap: 50,
-		paddingBottom: 40,
-		paddingHorizontal: 20
+		paddingBottom: 20,
 	},
 
 	dashboardTexts: {
 		padding: 20,
 	},
 
-	graphicLabels: {
+	dashboardParagraph: {
+		fontSize: 15,
+		color: theme.colors.labels,
+	},
+
+	dashboardTitle: {
+		fontSize: 30,
+		fontWeight: '700',
+	},
+
+	dashboardLabels: {
+		gap: 50,
+		paddingBottom: 40,
+		paddingHorizontal: 20,
+	},
+
+	graphic: {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		marginBottom: 20,
@@ -73,7 +52,7 @@ const styles = StyleSheet.create({
 
 	labelBase: {
 		paddingVertical: 6,
-		paddingHorizontal: 12,
+		paddingHorizontal: 17,
 		borderRadius: 20,
 		borderColor: theme.colors.dashboardBorder,
 		borderWidth: 1,
@@ -81,30 +60,82 @@ const styles = StyleSheet.create({
 
 	labelText: {
 		textTransform: 'capitalize',
+		fontSize: 13,
 		fontWeight: '600',
 	},
 
-	graphic: {
+	scaleContainer: {
+		width: 40,
+		justifyContent: 'space-between',
+		height: 150,
+	},
+
+	scaleText: {
+		fontSize: 12,
+		color: theme.colors.labels,
+		position: 'absolute',
+		right: 0,
+	},
+
+	graphContainer: {
+		flex: 1,
+		flexDirection: 'column',
+		alignItems: 'center',
+		justifyContent: 'flex-start',
+		height: 170,
+	},
+
+	barArea: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'flex-end',
-		height: 40,
+		width: '80%',
+		height: 150,
+		position: 'relative',
 	},
 
-	bars: {
-		backgroundColor: theme.colors.primary,
-		borderRadius: 8,
+	barContainer: {
 		width: 30,
-		marginHorizontal: 5,
-	},
-
-	months: {
-		marginTop: 6,
-	},
-
-	graphicBars: {
 		alignItems: 'center',
-		flex: 1,
+		position: 'relative',
+	},
+
+	barTouchArea: {
+		height: 150,
+		justifyContent: 'flex-end',
+	},
+
+	labelTextBelow: {
+		position: 'absolute',
+		bottom: -20,
+		width: 50,
+		textAlign: 'center',
+		color: theme.colors.labels,
+	},
+
+	dashLineBase: {
+		position: 'absolute',
+		left: 0,
+		right: 0,
+		borderTopWidth: 1,
+		borderStyle: 'dashed',
+		height: 1,
+	},
+
+	dashDot: {
+		position: 'absolute',
+		left: -10,
+		width: 6,
+		height: 6,
+		borderRadius: 6,
+		transform: [{ translateY: -4 }],
+	},
+
+	dashValue: {
+		position: 'absolute',
+		left: -55,
+		fontSize: 12,
+		fontWeight: 'bold',
+		transform: [{ translateX: -2.8 }, { translateY: -10 }],
 	},
 });
 

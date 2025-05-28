@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-	View,
-	Text,
-	ScrollView,
-	TouchableOpacity,
-	TouchableWithoutFeedback,
 	Animated,
 	Easing,
+	ScrollView,
+	Text,
+	TouchableOpacity,
+	TouchableWithoutFeedback,
+	View,
 } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import styles from '../styles/homeStyle';
 import theme from '../theme';
 
-type FilterType = 'all' | 'year' | 'months' | 'weeks' | 'days';
+type FilterType = 'all' | 'year' | 'months' | 'days';
 
 export default function Home() {
 	const [filter, setFilter] = useState<FilterType>('all');
@@ -22,29 +22,51 @@ export default function Home() {
 		all: [50, 80, 40, 95, 70],
 		year: [70, 40, 90, 30, 60],
 		months: [20, 60, 80, 55, 40],
-		weeks: [30, 50, 60, 80, 20],
 		days: [10, 40, 70, 50, 90],
 	};
+	
+	const labelsByFilter: Record<FilterType, string[]> = {
+		all: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+		year: ['2020', '2021', '2022', '2023', '2024'],
+		months: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+		days: getLastFiveDaysLabels(),
+	};
 
-	const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May'];
+	function getLastFiveDaysLabels() {
+		const labels = [];
+		const today = new Date();
+		for (let i = 4; i >= 0; i--) {
+			const day = new Date(today);
+			day.setDate(today.getDate() - i);
+			labels.push(day.getDate().toString());
+		}
+		return labels;
+	}
+
 	const maxBarHeight = 150;
+	const maxValue = 100;
+	const step = Math.ceil(maxValue / 5);
+	const scale = Array.from({ length: 6 }, (_, i) => i * step); // [0, 20, ..., 100]
 
 	const currentData = data[filter];
+	const labels = labelsByFilter[filter];
 
 	const animatedValues = useRef(
-		currentData.map(value => new Animated.Value((value / 100) * maxBarHeight))
+		currentData.map(
+			value => new Animated.Value((value / maxValue) * maxBarHeight)
+		)
 	).current;
 
 	useEffect(() => {
 		currentData.forEach((value, i) => {
 			Animated.timing(animatedValues[i], {
-				toValue: (value / 100) * maxBarHeight,
+				toValue: (value / maxValue) * maxBarHeight,
 				duration: 600,
 				easing: Easing.out(Easing.exp),
 				useNativeDriver: false,
 			}).start();
 		});
-		setSelectedBarIndex(null); // reset ao mudar o filtro
+		setSelectedBarIndex(null);
 	}, [filter]);
 
 	return (
@@ -59,67 +81,159 @@ export default function Home() {
 							<Text style={styles.dashboardParagraph}>Dashboard</Text>
 							<Text style={styles.dashboardTitle}>Expensives</Text>
 						</View>
+
 						<View style={styles.dashboardLabels}>
-							{/* Labels */}
 							<View style={styles.graphic}>
-								{['all', 'year', 'months', 'weeks', 'days'].map(item => (
-									<TouchableOpacity
-										key={item}
-										onPress={() => setFilter(item as FilterType)}
-										style={[
-											styles.labelBase,
-											{
-												backgroundColor:
-													filter === item
-														? theme.colors.primary
-														: theme.colors.accent,
-											},
-										]}
-									>
-										<Text
+								{(['all', 'year', 'months', 'days'] as FilterType[]).map(
+									item => (
+										<TouchableOpacity
+											key={item}
+											onPress={() => setFilter(item)}
 											style={[
-												styles.labelText,
+												styles.labelBase,
 												{
-													color:
+													backgroundColor:
 														filter === item
-															? theme.colors.accent
-															: theme.colors.labels,
+															? theme.colors.primary
+															: theme.colors.accent,
 												},
 											]}
 										>
-											{item}
-										</Text>
-									</TouchableOpacity>
-								))}
+											<Text
+												style={[
+													styles.labelText,
+													{
+														color:
+															filter === item
+																? theme.colors.accent
+																: theme.colors.labels,
+													},
+												]}
+											>
+												{item}
+											</Text>
+										</TouchableOpacity>
+									)
+								)}
 							</View>
 						</View>
 
-						{/* Gráfico com toque fora das barras */}
 						<TouchableWithoutFeedback onPress={() => setSelectedBarIndex(null)}>
-							<View style={[styles.graphic, { height: maxBarHeight }]}>
-								{currentData.map((_, index) => (
-									<TouchableOpacity
-										key={index}
-										activeOpacity={0.8}
-										style={styles.graphicBars}
-										onPress={() => setSelectedBarIndex(index)}
-									>
-										<Animated.View
+							<View
+								style={{
+									flexDirection: 'row',
+									paddingHorizontal: 20,
+									paddingTop: 10,
+								}}
+							>
+								{/* Escala lateral */}
+								<View style={styles.scaleContainer}>
+									{scale.map(value => (
+										<Text
+											key={value}
 											style={[
-												styles.bars,
-												{
-													height: animatedValues[index],
-													backgroundColor:
-														selectedBarIndex === null ||
-														selectedBarIndex === index
-															? theme.colors.primary
-															: '#D9D9D9',
-												},
+												styles.scaleText,
+												{ bottom: (value / maxValue) * maxBarHeight - 6 },
 											]}
-										/>
-										<Text style={styles.months}>{labels[index]}</Text>
-									</TouchableOpacity>
-								))}
+										>
+											R$ {value}
+										</Text>
+									))}
+								</View>
+
+								{/* Gráfico */}
+								<View style={styles.graphContainer}>
+									<View style={styles.barArea}>
+										{selectedBarIndex === null &&
+											currentData.map((_, index) => (
+												<Animated.View
+													key={`dash-none-${index}`}
+													style={[
+														styles.dashLineBase,
+														{
+															bottom: animatedValues[index],
+															borderColor: theme.colors.dashboardBorder,
+														},
+													]}
+												/>
+											))}
+
+										{selectedBarIndex !== null && (
+											<Animated.View
+												style={[
+													styles.dashLineBase,
+													{
+														bottom: animatedValues[selectedBarIndex],
+														borderColor: theme.colors.primary,
+													},
+												]}
+											>
+												<Animated.View
+													style={[
+														styles.dashDot,
+														{ backgroundColor: theme.colors.primary },
+													]}
+												/>
+												<Text
+													style={[
+														styles.dashValue,
+														{ color: theme.colors.primary },
+													]}
+												>
+													R$ {currentData[selectedBarIndex]}
+												</Text>
+											</Animated.View>
+										)}
+
+										{selectedBarIndex !== null &&
+											currentData.map((_, index) => {
+												if (index === selectedBarIndex) return null;
+												return (
+													<Animated.View
+														key={`dash-${index}`}
+														style={[
+															styles.dashLineBase,
+															{
+																bottom: animatedValues[index],
+																borderColor: theme.colors.dashboardBorder,
+															},
+														]}
+													/>
+												);
+											})}
+
+										{/* Barras e labels */}
+										{currentData.map((value, index) => {
+											const barWidth = 30;
+											return (
+												<View key={index} style={styles.barContainer}>
+													<TouchableOpacity
+														activeOpacity={0.8}
+														onPress={() => setSelectedBarIndex(index)}
+														style={styles.barTouchArea}
+													>
+														<Animated.View
+															style={{
+																width: barWidth,
+																borderRadius: 8,
+																backgroundColor:
+																	selectedBarIndex === null ||
+																	selectedBarIndex === index
+																		? theme.colors.primary
+																		: theme.colors.dashboardBorder,
+																height: animatedValues[index],
+															}}
+														/>
+													</TouchableOpacity>
+
+													<Text style={styles.labelTextBelow}>
+														{labels[index]}
+													</Text>
+												</View>
+											);
+										})}
+									</View>
+								</View>
 							</View>
 						</TouchableWithoutFeedback>
 					</View>
