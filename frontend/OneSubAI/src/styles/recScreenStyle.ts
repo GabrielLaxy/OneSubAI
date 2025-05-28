@@ -9,7 +9,18 @@ const styles = StyleSheet.create({
 	},
 	topContainer: {
 		flex: 5,
-		backgroundColor: theme.colors.background,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: theme.colors.primary,
+	},
+	posterContainer: {
+		width: '90%',
+		height: '100%',
+		// Adicione estas propriedades:
+		position: 'absolute',
+		alignItems: 'center',
+		justifyContent: 'center',
+		zIndex: 1,
 	},
 	bottomContainer: {
 		flex: 1,
@@ -18,6 +29,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	buttonContainer: {
+		overflow: 'hidden',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
@@ -44,6 +56,23 @@ const styles = StyleSheet.create({
 		fontFamily: 'Poppins-Medium',
 		fontSize: 17,
 		textDecorationLine: 'underline',
+	},
+	emptyMessage: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	emptyText: {
+		color: theme.colors.accent,
+		fontSize: 20,
+		fontFamily: 'Poppins-Medium',
+	},
+	backPosterStyle: {
+		position: 'absolute',
+		width: '85%',
+		height: '90%',
+		alignSelf: 'center',
+		zIndex: 1,
 	},
 });
 

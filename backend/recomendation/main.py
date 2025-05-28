@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# === CONFIGURAÇÕES FIXAS ===
+
 GENRE_IDS = {
     1: "Ação", 2: "Comédia", 3: "Drama", 4: "Ficção Científica",
     5: "Romance", 6: "Terror", 7: "Mistério", 8: "Documentário"
@@ -13,7 +13,7 @@ PROVIDER_IDS = {
     1: "Netflix", 2: "Amazon Prime Video", 3: "Max", 4: "Disney+", 5: "Globoplay"
 }
 
-# === FUNÇÕES DE RECOMENDAÇÃO ===
+
 def carregar_filmes(path_to_json):
     with open(path_to_json, encoding='utf-8') as f:
         return json.load(f)
@@ -79,7 +79,7 @@ def recomendar(perfil, vetores, ids, filmes, providers_ativos=None, top_n=1, ign
             break
     return recomendados
 
-# === INTERFACE TERMINAL COM AVALIAÇÃO E "NUNCA VI" ===
+
 def avaliar_filme(filme):
     print(f"\n🎬 Filme: {filme['title_pt_br']}")
     print(f"📺 Plataformas: {', '.join(PROVIDER_IDS[p] for p in filme['providers'])}")
@@ -98,7 +98,7 @@ def escolher_aleatorio_por_nota(filmes, nota_min, usados):
 def main():
     filmes = carregar_filmes("../local-db/limpo.json")
     vetores, ids = gerar_vetores(filmes)
-    providers_ativos = [1, 2, 4]  # Netflix, Prime, Disney+
+    providers_ativos = [1, 2, 4]  
 
     fila = []
     usados = set()
@@ -124,7 +124,7 @@ def main():
             dislikes.append(filme["id"])
             avaliacoes += 1
         elif resp == 2:
-            # Nunca viu: adiciona um novo aleatório com nota > 6
+            
             novo = escolher_aleatorio_por_nota(filmes, 8.5, usados)
             if novo:
                 fila.append(novo)
@@ -132,7 +132,7 @@ def main():
             print("🔁 Filme pulado. Adicionando outro à fila...")
             continue
 
-        # A cada 2 avaliações válidas, recomendar 1 novo filme
+        
         if avaliacoes % 2 == 0 and avaliacoes > 0:
             perfil = construir_perfil_usuario(likes, dislikes, vetores, ids)
             novos = recomendar(perfil, vetores, ids, filmes,
@@ -146,7 +146,7 @@ def main():
                 usados.add(novo_id)
                 print(f"\n📥 Novo filme recomendado: {novo_filme['title_pt_br']}")
 
-    # Recomendação final
+    
     print("\n✅ Avaliações concluídas. Suas recomendações finais são:")
     perfil_final = construir_perfil_usuario(likes, dislikes, vetores, ids)
     finais = recomendar(perfil_final, vetores, ids, filmes,
