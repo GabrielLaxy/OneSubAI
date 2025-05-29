@@ -169,7 +169,7 @@ export default function Home() {
 							flex: 1,
 							justifyContent: 'center',
 							alignItems: 'center',
-							marginBottom: 60
+							marginBottom: 60,
 						}}
 					>
 						<Text style={{ color: 'white', fontSize: 14, fontWeight: 600 }}>
