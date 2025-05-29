@@ -1,7 +1,7 @@
 import { MD3LightTheme, configureFonts } from 'react-native-paper';
 
 const fontConfig = {
-	fontFamily: 'Helvetica-Regular',
+	fontFamily: 'Poppins',
 };
 
 const theme = {

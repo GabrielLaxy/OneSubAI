@@ -5,7 +5,14 @@ const styles = StyleSheet.create({
 	fakeHeader: {
 		backgroundColor: theme.colors.primary,
 		width: '100%',
-		height: 150,
+		height: 200,
+	},
+
+	fakeHeaderContent: {
+		flex: 1, // ocupa toda a altura do fakeHeader
+		justifyContent: 'center', // centraliza verticalmente
+		alignItems: 'center', // centraliza horizontalmente
+		paddingHorizontal: 20, // opcional, para não grudar nas laterais
 	},
 
 	secondLayer: {
@@ -136,6 +143,61 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		fontWeight: 'bold',
 		transform: [{ translateX: -2.8 }, { translateY: -10 }],
+	},
+
+	subscribes: {
+		marginTop: 40,
+	},
+
+	subscribesTexts: {
+		marginBottom: 15,
+	},
+
+	subscribesTitle: {
+		fontSize: 25,
+		fontWeight: 700,
+	},
+
+	subscribesParagraph: {
+		fontSize: 15,
+		color: theme.colors.labels,
+	},
+
+	subs: {
+		flexDirection: 'row',
+		gap: 20,
+		marginBottom: 80,
+	},
+
+	subscribeSquare: {
+		borderColor: theme.colors.dashboardBorder,
+		borderWidth: 1,
+		height: 135,
+		width: 138,
+		padding: 15,
+		borderRadius: 8,
+	},
+
+	streamingTitle: {
+		fontSize: 15,
+		fontWeight: 700,
+	},
+
+	subscribeExpirationAlert: {
+		fontSize: 10,
+		color: theme.colors.labels,
+	},
+
+	subscribePreco: {
+		marginTop: 10,
+		fontSize: 15,
+		fontWeight: 600,
+	},
+
+	streamingImage: {
+		height: 33,
+		width: 33,
+		marginBottom: 5,
 	},
 });
 
