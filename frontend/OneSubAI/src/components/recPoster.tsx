@@ -1,3 +1,4 @@
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -21,17 +22,15 @@ type RecPosterProps = {
 	numOfCards: number;
 	index: number;
 	activeIndex: SharedValue<number>;
-	onResponse: (res: 'liked' | 'disliked') => void;
+	onResponse: (res: 'liked' | 'disliked' | 'skipped') => void;
 };
 
-export default function RecPoster({
-	movieInfo,
-	numOfCards,
-	index,
-	activeIndex,
-	onResponse,
-}: RecPosterProps) {
+const RecPoster = forwardRef(function RecPoster(
+	{ movieInfo, numOfCards, index, activeIndex, onResponse }: RecPosterProps,
+	ref
+) {
 	const translationX = useSharedValue(0);
+	const translationY = useSharedValue(0);
 
 	const animatedCard = useAnimatedStyle(() => ({
 		opacity: interpolate(
@@ -48,11 +47,13 @@ export default function RecPoster({
 				),
 			},
 			{
-				translateY: interpolate(
-					activeIndex.value,
-					[index - 1, index, index + 1],
-					[-25, 0, 0]
-				),
+				translateY:
+					translationY.value +
+					interpolate(
+						activeIndex.value,
+						[index - 1, index, index + 1],
+						[-25, 0, 0]
+					),
 			},
 			{
 				translateX: translationX.value,
@@ -70,23 +71,65 @@ export default function RecPoster({
 	const gesture = Gesture.Pan()
 		.onChange(event => {
 			translationX.value = event.translationX;
+			translationY.value = event.translationY;
 			activeIndex.value = interpolate(
-				Math.abs(translationX.value),
+				Math.max(Math.abs(translationX.value), Math.abs(translationY.value)),
 				[0, 500],
 				[index, index + 0.8]
 			);
 		})
 		.onEnd(event => {
-			if (Math.abs(event.velocityX) > 100) {
-				translationX.value = withSpring(Math.sign(event.velocityX) * 500, {
-					velocity: event.velocityX,
-				});
+			const isHorizontal =
+				Math.abs(event.velocityX) > Math.abs(event.velocityY);
+			const velocityThreshold = 100;
+			const distanceThreshold = 100;
+
+			if (
+				(isHorizontal && Math.abs(event.velocityX) > velocityThreshold) ||
+				(!isHorizontal && event.velocityY > velocityThreshold)
+			) {
+				if (!isHorizontal && event.velocityY > velocityThreshold) {
+					// Swipe para baixo
+					translationY.value = withSpring(Math.sign(event.velocityY) * 900, {
+						velocity: event.velocityY,
+					});
+				} else {
+					// Swipe para os lados
+					translationX.value = withSpring(Math.sign(event.velocityX) * 500, {
+						velocity: event.velocityX,
+					});
+				}
 				activeIndex.value = withSpring(index + 1);
-				runOnJS(onResponse)(event.velocityX > 0 ? 'liked' : 'disliked');
+				runOnJS(onResponse)(
+					isHorizontal
+						? event.velocityX > 0
+							? 'liked'
+							: 'disliked'
+						: 'skipped' // Você pode criar um novo tipo, ex: 'skipped'
+				);
 			} else {
 				translationX.value = withSpring(0);
+				translationY.value = withSpring(0);
 			}
 		});
+
+	useImperativeHandle(ref, () => ({
+		like: () => {
+			translationX.value = withSpring(500, { velocity: 800 });
+			activeIndex.value = withSpring(index + 1);
+			runOnJS(onResponse)('liked');
+		},
+		dislike: () => {
+			translationX.value = withSpring(-500, { velocity: 800 });
+			activeIndex.value = withSpring(index + 1);
+			runOnJS(onResponse)('disliked');
+		},
+		skip: () => {
+			translationY.value = withSpring(900, { velocity: 800 });
+			activeIndex.value = withSpring(index + 1);
+			runOnJS(onResponse)('skipped');
+		},
+	}));
 
 	return (
 		<GestureDetector gesture={gesture}>
@@ -136,4 +179,6 @@ export default function RecPoster({
 			</Animated.View>
 		</GestureDetector>
 	);
-}
+});
+
+export default RecPoster;

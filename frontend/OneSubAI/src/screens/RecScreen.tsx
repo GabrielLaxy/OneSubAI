@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { IconButton, TouchableRipple } from 'react-native-paper';
@@ -16,13 +16,20 @@ export default function RecScreen() {
 	const activeIndex = useSharedValue(0);
 	const [index, setIndex] = useState(0);
 
-	const onReponse = (res: "liked" | "disliked" ) => {
-		if (res === "liked") {
-			console.log("Movie liked");
-		} else if (res === "disliked") {
-			console.log("Movie disliked");
+	// Crie refs para cada card
+	const posterRefs = useRef<
+		(null | { like: () => void; dislike: () => void; skip: () => void })[]
+	>([]);
+
+	const onReponse = (res: 'liked' | 'disliked' | 'skipped') => {
+		if (res === 'liked') {
+			console.log('Movie liked');
+		} else if (res === 'disliked') {
+			console.log('Movie disliked');
+		} else if (res === 'skipped') {
+			console.log('Movie skipped');
 		}
-	}
+	};
 
 	useAnimatedReaction(
 		() => activeIndex.value,
@@ -33,30 +40,34 @@ export default function RecScreen() {
 		}
 	);
 
-	useEffect(() => console.log('Active Index:', activeIndex.value), [activeIndex.value]);
+	useEffect(
+		() => console.log('Active Index:', activeIndex.value),
+		[activeIndex.value]
+	);
 
 	const onLike = () => {
-		console.log('Liked');
+		posterRefs.current[index]?.like();
 	};
 
 	const onDislike = () => {
-		console.log('Disliked');
+		posterRefs.current[index]?.dislike();
 	};
 
 	const onNeverSeen = () => {
-		console.log('Never Seen');
+		posterRefs.current[index]?.skip();
 	};
 
 	return (
 		<View style={styles.container}>
 			<StatusBar animated={true} style="auto" />
 			<View style={styles.topContainer}>
-				{movies.map((movie, index) => (
+				{movies.map((movie, idx) => (
 					<RecPoster
 						key={movie.id}
+						ref={el => (posterRefs.current[idx] = el as { like: () => void; dislike: () => void; skip: () => void } | null)}
 						movieInfo={movie}
 						numOfCards={movies.length}
-						index={index}
+						index={idx}
 						activeIndex={activeIndex}
 						onResponse={onReponse}
 					/>
