@@ -12,14 +12,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		backgroundColor: theme.colors.primary,
-	},
-	posterContainer: {
-		width: '90%',
-		height: '100%',
-		// Adicione estas propriedades:
-		position: 'absolute',
-		alignItems: 'center',
-		justifyContent: 'center',
 		zIndex: 1,
 	},
 	bottomContainer: {

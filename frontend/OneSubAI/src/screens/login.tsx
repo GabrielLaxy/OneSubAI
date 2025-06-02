@@ -6,12 +6,16 @@ import Styles from '../styles/loginStyle'; // importando o arquivo de estilos
 
 export default function Login({ navigation }: any) {
 	return (
-		<SafeAreaView style={{flex: 1}}> 
-		{/* definir o estilo do SafeAreaView sempre como flex: 1 para ocupar toda a tela toda */}
+		<SafeAreaView style={{ flex: 1 }}>
+			{/* definir o estilo do SafeAreaView sempre como flex: 1 para ocupar toda a tela toda */}
 			<View style={Styles.container}>
 				<Text>Tela de Login</Text>
-				<Button title="Tela de cadastro" onPress={() => navigation.navigate('Register')} />
+				<Button
+					title="Tela de cadastro"
+					onPress={() => navigation.navigate('Register')}
+				/>
 				<Button title="Home" onPress={() => navigation.navigate('TabRoutes')} />
+				<Button title="Tinder" onPress={() => navigation.navigate('RecScreen')} />
 			</View>
 		</SafeAreaView>
 	);

@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
-import  Theme  from './src/theme';
+import Theme from './src/theme';
 import { PaperProvider } from 'react-native-paper';
 import Routes from './src/screens/routes';
 import { NavigationContainer } from '@react-navigation/native';
+import { MoviesProvider } from './src/contexts/moviesContext';
 
 import { useFonts } from 'expo-font';
 import { preventAutoHideAsync, hideAsync } from 'expo-splash-screen';
@@ -32,9 +33,11 @@ export default function App() {
 
 	return (
 		<PaperProvider theme={Theme}>
-			<NavigationContainer>
-				<Routes />
-			</NavigationContainer>
+			<MoviesProvider>
+				<NavigationContainer>
+					<Routes />
+				</NavigationContainer>
+			</MoviesProvider>
 		</PaperProvider>
 	);
 }
