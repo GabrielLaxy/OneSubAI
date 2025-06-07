@@ -6,6 +6,7 @@ import { PaperProvider } from 'react-native-paper';
 import Routes from './src/screens/routes';
 import { NavigationContainer } from '@react-navigation/native';
 import { MoviesProvider } from './src/contexts/moviesContext';
+import { UserProvider } from './src/contexts/userContext';
 
 import { useFonts } from 'expo-font';
 import { preventAutoHideAsync, hideAsync } from 'expo-splash-screen';
@@ -33,11 +34,13 @@ export default function App() {
 
 	return (
 		<PaperProvider theme={Theme}>
-			<MoviesProvider>
-				<NavigationContainer>
-					<Routes />
-				</NavigationContainer>
-			</MoviesProvider>
+			<UserProvider>
+				<MoviesProvider>
+					<NavigationContainer>
+						<Routes />
+					</NavigationContainer>
+				</MoviesProvider>
+			</UserProvider>
 		</PaperProvider>
 	);
 }

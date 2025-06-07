@@ -6,8 +6,25 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 GENRE_IDS = {
-    1: "Ação", 2: "Comédia", 3: "Drama", 4: "Ficção Científica",
-    5: "Romance", 6: "Terror", 7: "Mistério", 8: "Documentário"
+"Animação": 1,
+  "Aventura": 2,
+  "Família": 3,
+  "Comédia": 4,
+  "Ação": 5,
+  "Ficção científica": 6,
+  "Drama": 7,
+  "Fantasia": 8,
+  "Romance": 9,
+  "Terror": 10,
+  "Thriller": 11,
+  "Crime": 12,
+  "Faroeste": 13,
+  "Mistério": 14,
+  "Música": 15,
+  "História": 16,
+  "Guerra": 17,
+  "Cinema TV": 18,
+  "Documentário": 19
 }
 PROVIDER_IDS = {
     1: "Netflix", 2: "Amazon Prime Video", 3: "Max", 4: "Disney+", 5: "Globoplay"
@@ -80,83 +97,105 @@ def recomendar(perfil, vetores, ids, filmes, providers_ativos=None, top_n=1, ign
     return recomendados
 
 
-def avaliar_filme(filme):
-    print(f"\n🎬 Filme: {filme['title_pt_br']}")
-    print(f"📺 Plataformas: {', '.join(PROVIDER_IDS[p] for p in filme['providers'])}")
-    print("Você já viu esse filme?")
-    print("[1] Gostei | [0] Não gostei | [2] Nunca vi")
-    while True:
-        resp = input("> ").strip()
-        if resp in ["0", "1", "2"]:
-            return int(resp)
-        print("Entrada inválida. Digite 1 para Like, 0 para Dislike ou 2 para Nunca vi.")
+# def avaliar_filme(filme):
+#     print(f"\n🎬 Filme: {filme['title_pt_br']}")
+#     print(f"📺 Plataformas: {', '.join(PROVIDER_IDS[p] for p in filme['providers'])}")
+#     print("Você já viu esse filme?")
+#     print("[1] Gostei | [0] Não gostei | [2] Nunca vi")
+#     while True:
+#         resp = input("> ").strip()
+#         if resp in ["0", "1", "2"]:
+#             return int(resp)
+#         print("Entrada inválida. Digite 1 para Like, 0 para Dislike ou 2 para Nunca vi.")
 
-def escolher_aleatorio_por_nota(filmes, nota_min, usados):
-    candidatos = [f for f in filmes if f.get("tmdb_rating", 0) > nota_min and f["id"] not in usados]
-    return random.choice(candidatos) if candidatos else None
+# def escolher_aleatorio_por_nota(filmes, nota_min, usados):
+#     candidatos = [f for f in filmes if f.get("tmdb_rating", 0) > nota_min and f["id"] not in usados]
+#     return random.choice(candidatos) if candidatos else None
 
-def main():
-    filmes = carregar_filmes("../local-db/limpo.json")
-    vetores, ids = gerar_vetores(filmes)
-    providers_ativos = [1, 2, 4]  
+# def iniciar_sessao():
+#     filmes = carregar_filmes("../local-db/limpo.json")
+#     vetores, ids = gerar_vetores(filmes)
+#     #pegar providers ativos do banco
+#     providers_ativos = [1, 2, 4]  # Exemplo de providers ativos
+#     fila = []
+#     usados = set()
+#     filmes_qualificados = [
+#         f for f in filmes
+#         if f.get("tmdb_rating", 0) > 8 and any(p in providers_ativos for p in f.get("providers", []))
+#     ]
+#     while len(fila) < 6 and filmes_qualificados:
+#         f = random.choice(filmes_qualificados)
+#         if f["id"] not in usados:
+#             fila.append(f)
+#             usados.add(f["id"])
+#     return (print(fila),{
+#         "fila": fila,
+#         "usados": list(usados),
+#     })
 
-    fila = []
-    usados = set()
-    filmes_qualificados = [f for f in filmes if f.get("tmdb_rating", 0) > 8]
-    while len(fila) < 6:
-        f = random.choice(filmes_qualificados)
-        if f["id"] not in usados:
-            fila.append(f)
-            usados.add(f["id"])
 
-    likes = []
-    dislikes = []
-    avaliacoes = 0
+# def main():
+#     filmes = carregar_filmes("../local-db/limpo.json")
+#     vetores, ids = gerar_vetores(filmes)
+#     providers_ativos = [1, 2, 4]  
 
-    while avaliacoes < 8 and fila:
-        filme = fila.pop(0)
-        resp = avaliar_filme(filme)
+#     fila = []
+#     usados = set()
+#     filmes_qualificados = [f for f in filmes if f.get("tmdb_rating", 0) > 8]
+#     while len(fila) < 6:
+#         f = random.choice(filmes_qualificados)
+#         if f["id"] not in usados:
+#             fila.append(f)
+#             usados.add(f["id"])
 
-        if resp == 1:
-            likes.append(filme["id"])
-            avaliacoes += 1
-        elif resp == 0:
-            dislikes.append(filme["id"])
-            avaliacoes += 1
-        elif resp == 2:
+#     likes = []
+#     dislikes = []
+#     avaliacoes = 0
+
+#     while avaliacoes < 8 and fila:
+#         filme = fila.pop(0)
+#         resp = avaliar_filme(filme)
+
+#         if resp == 1:
+#             likes.append(filme["id"])
+#             avaliacoes += 1
+#         elif resp == 0:
+#             dislikes.append(filme["id"])
+#             avaliacoes += 1
+#         elif resp == 2:
             
-            novo = escolher_aleatorio_por_nota(filmes, 8.5, usados)
-            if novo:
-                fila.append(novo)
-                usados.add(novo["id"])
-            print("🔁 Filme pulado. Adicionando outro à fila...")
-            continue
+#             novo = escolher_aleatorio_por_nota(filmes, 8.5, usados)
+#             if novo:
+#                 fila.append(novo)
+#                 usados.add(novo["id"])
+#             print("🔁 Filme pulado. Adicionando outro à fila...")
+#             continue
 
         
-        if avaliacoes % 2 == 0 and avaliacoes > 0:
-            perfil = construir_perfil_usuario(likes, dislikes, vetores, ids)
-            novos = recomendar(perfil, vetores, ids, filmes,
-                               providers_ativos=providers_ativos,
-                               top_n=1,
-                               ignorar_ids=likes + dislikes + list(usados))
-            if novos:
-                novo_id = novos[0]
-                novo_filme = next(f for f in filmes if f["id"] == novo_id)
-                fila.append(novo_filme)
-                usados.add(novo_id)
-                print(f"\n📥 Novo filme recomendado: {novo_filme['title_pt_br']}")
+#         if avaliacoes % 2 == 0 and avaliacoes > 0:
+#             perfil = construir_perfil_usuario(likes, dislikes, vetores, ids)
+#             novos = recomendar(perfil, vetores, ids, filmes,
+#                                providers_ativos=providers_ativos,
+#                                top_n=1,
+#                                ignorar_ids=likes + dislikes + list(usados))
+#             if novos:
+#                 novo_id = novos[0]
+#                 novo_filme = next(f for f in filmes if f["id"] == novo_id)
+#                 fila.append(novo_filme)
+#                 usados.add(novo_id)
+#                 print(f"\n📥 Novo filme recomendado: {novo_filme['title_pt_br']}")
 
     
-    print("\n✅ Avaliações concluídas. Suas recomendações finais são:")
-    perfil_final = construir_perfil_usuario(likes, dislikes, vetores, ids)
-    finais = recomendar(perfil_final, vetores, ids, filmes,
-                        providers_ativos=providers_ativos,
-                        top_n=5,
-                        ignorar_ids=likes + dislikes)
-    for rec_id in finais:
-        filme = next(f for f in filmes if f["id"] == rec_id)
-        provedores = ", ".join(PROVIDER_IDS[p] for p in filme["providers"])
-        print(f"- {filme['title_pt_br']} [{provedores}]")
+#     print("\n✅ Avaliações concluídas. Suas recomendações finais são:")
+#     perfil_final = construir_perfil_usuario(likes, dislikes, vetores, ids)
+#     finais = recomendar(perfil_final, vetores, ids, filmes,
+#                         providers_ativos=providers_ativos,
+#                         top_n=5,
+#                         ignorar_ids=likes + dislikes)
+#     for rec_id in finais:
+#         filme = next(f for f in filmes if f["id"] == rec_id)
+#         provedores = ", ".join(PROVIDER_IDS[p] for p in filme["providers"])
+#         print(f"- {filme['title_pt_br']} [{provedores}]")
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -18,11 +18,16 @@ const screenWidth = Dimensions.get('screen').width;
 const cardWidth = screenWidth * 0.87;
 
 type RecPosterProps = {
-	movieInfo: { id: number; poster: string; title: string; genres: string[] };
+	movieInfo: {
+		id: number;
+		poster_url: string;
+		title_pt_br: string;
+		genres: number[];
+	};
 	numOfCards: number;
 	index: number;
 	activeIndex: SharedValue<number>;
-	onResponse: (res: 'liked' | 'disliked' | 'skipped') => void;
+	onResponse: (res: 1 | -1 | 0) => void;
 };
 
 const RecPoster = forwardRef(function RecPoster(
@@ -32,11 +37,38 @@ const RecPoster = forwardRef(function RecPoster(
 	const translationX = useSharedValue(0);
 	const translationY = useSharedValue(0);
 
+	// Novo mapa de gêneros conforme solicitado
+	const genreMap: Record<number, string> = {
+		1: 'Animação',
+		2: 'Aventura',
+		3: 'Família',
+		4: 'Comédia',
+		5: 'Ação',
+		6: 'Ficção científica',
+		7: 'Drama',
+		8: 'Fantasia',
+		9: 'Romance',
+		10: 'Terror',
+		11: 'Thriller',
+		12: 'Crime',
+		13: 'Faroeste',
+		14: 'Mistério',
+		15: 'Música',
+		16: 'História',
+		17: 'Guerra',
+		18: 'Cinema TV',
+		19: 'Documentário',
+	};
+
+	function convertGenreIdsToNames(ids: number[]): string[] {
+		return ids.map(id => genreMap[id] || 'Desconhecido');
+	}
+
 	const animatedCard = useAnimatedStyle(() => ({
 		opacity: interpolate(
 			activeIndex.value,
 			[index - 1, index, index + 1],
-			[1 - 1 / 5, 1, 1] //5 numero de cards que estao na tela
+			[1 - 1 / 5, 1, 1]
 		),
 		transform: [
 			{
@@ -100,13 +132,7 @@ const RecPoster = forwardRef(function RecPoster(
 					});
 				}
 				activeIndex.value = withSpring(index + 1);
-				runOnJS(onResponse)(
-					isHorizontal
-						? event.velocityX > 0
-							? 'liked'
-							: 'disliked'
-						: 'skipped' // Você pode criar um novo tipo, ex: 'skipped'
-				);
+				runOnJS(onResponse)(isHorizontal ? (event.velocityX > 0 ? 1 : -1) : 0);
 			} else {
 				translationX.value = withSpring(0);
 				translationY.value = withSpring(0);
@@ -117,17 +143,17 @@ const RecPoster = forwardRef(function RecPoster(
 		like: () => {
 			translationX.value = withSpring(500, { velocity: 800 });
 			activeIndex.value = withSpring(index + 1);
-			runOnJS(onResponse)('liked');
+			runOnJS(onResponse)(1);
 		},
 		dislike: () => {
 			translationX.value = withSpring(-500, { velocity: 800 });
 			activeIndex.value = withSpring(index + 1);
-			runOnJS(onResponse)('disliked');
+			runOnJS(onResponse)(-1);
 		},
 		skip: () => {
 			translationY.value = withSpring(900, { velocity: 800 });
 			activeIndex.value = withSpring(index + 1);
-			runOnJS(onResponse)('skipped');
+			runOnJS(onResponse)(0);
 		},
 	}));
 
@@ -146,7 +172,7 @@ const RecPoster = forwardRef(function RecPoster(
 				<Image
 					style={[styles.posterImage, StyleSheet.absoluteFillObject]}
 					source={{
-						uri: movieInfo.poster,
+						uri: movieInfo.poster_url,
 					}}
 				/>
 				<LinearGradient
@@ -162,19 +188,21 @@ const RecPoster = forwardRef(function RecPoster(
 						styles.title,
 						{
 							fontSize:
-								movieInfo.title.trim().split(/\s+/).length === 1
+								movieInfo.title_pt_br.trim().split(/\s+/).length === 1
 									? 48
 									: Math.max(
 											24,
-											48 - 5 * (movieInfo.title.trim().split(/\s+/).length - 1)
+											48 -
+												5 *
+													(movieInfo.title_pt_br.trim().split(/\s+/).length - 1)
 									  ),
 						},
 					]}
 				>
-					{movieInfo.title}
+					{movieInfo.title_pt_br}
 				</Text>
 				<Text style={styles.genres}>
-					{movieInfo.genres.slice(0, 2).join(' • ')}
+					{convertGenreIdsToNames(movieInfo.genres).slice(0, 2).join(' • ')}
 				</Text>
 			</Animated.View>
 		</GestureDetector>
