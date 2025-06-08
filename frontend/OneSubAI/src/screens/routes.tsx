@@ -6,6 +6,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import HeaderOp from '../components/recScreensHeader';
 
 import styles from '../styles/tabBarStyle';
 
@@ -16,6 +17,7 @@ import Register from './register';
 import RecOption from './RecOption';
 import Config from './Config';
 import RecScreen from './RecScreen';
+import FinalRec from './finalRec';
 import theme from '../theme';
 
 const Tab = createBottomTabNavigator();
@@ -177,13 +179,7 @@ export default function Routes() {
 				options={StackHeaderOp}
 			/>
 			<Stack.Screen name="Config" component={Config} options={StackHeaderOp} />
-			<Stack.Screen
-				name="RecScreen"
-				component={RecScreen}
-				options={{
-					headerShown: false,
-				}}
-			/>
+			<Stack.Screen name="RecScreen" component={RecScreen} options={HeaderOp} />
 			<Stack.Screen
 				name="RecOptions"
 				component={RecOption}
@@ -191,6 +187,7 @@ export default function Routes() {
 					headerShown: true,
 				}}
 			/>
+			<Stack.Screen name="FinalRec" component={FinalRec} options={HeaderOp} />
 		</Stack.Navigator>
 	);
 }

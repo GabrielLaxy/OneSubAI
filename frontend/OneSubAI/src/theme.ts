@@ -1,8 +1,42 @@
 import { MD3LightTheme, configureFonts } from 'react-native-paper';
 
 const fontConfig = {
-	fontFamily: 'Helvetica-Regular',
-};
+	regular: {
+	  fontFamily: 'Poppins-Regular',
+	  fontWeight: "400" as "400",
+	  fontSize: 16,
+	  lineHeight: 24,
+	  letterSpacing: 0.5,
+	},
+	medium: {
+	  fontFamily: 'Poppins-Medium',
+	  fontWeight: "500" as "500",
+	  fontSize: 16,
+	  lineHeight: 24,
+	  letterSpacing: 0.5,
+	},
+	light: {
+	  fontFamily: 'Poppins-Light',
+	  fontWeight: "300" as "300",
+	  fontSize: 16,
+	  lineHeight: 24,
+	  letterSpacing: 0.5,
+	},
+	thin: {
+	  fontFamily: 'Poppins-Light',
+	  fontWeight: "100" as "100",
+	  fontSize: 16,
+	  lineHeight: 24,
+	  letterSpacing: 0.5,
+	},
+	bold: {
+	  fontFamily: 'Poppins-Bold',
+	  fontWeight: "700" as "700",
+	  fontSize: 16,
+	  lineHeight: 24,
+	  letterSpacing: 0.5,
+	},
+  };
 
 const theme = {
 	...MD3LightTheme,
@@ -15,6 +49,7 @@ const theme = {
 		background: '#F0F0F0', //branco meio cinza
 		text: '#000000', //preto
 		placeholder: '#A7A7A7', //cinza
+		outline: '#FFFFFF',
 	},
 };
 
