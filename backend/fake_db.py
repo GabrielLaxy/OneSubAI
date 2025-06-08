@@ -3,7 +3,7 @@ import random
 
 def fake_db_init():
     """
-    Recebe uma lista de filmes do arquivo limpo.json e retorna 6 filmes aleatórios com tmdb_rating > 8.
+    Recebe uma lista de filmes do arquivo limpo.json e retorna 8 filmes aleatórios com tmdb_rating > 8.
     """
     with open("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\limpo.json", 'r', encoding='utf-8') as f:
         json_data = json.load(f)
@@ -34,3 +34,17 @@ def get_random_good_movie(ignorar_ids=None):
         if movie.get("tmdb_rating", 0) > 8 and movie.get("id") not in ignorar_ids
     ]
     return random.choice(high_rated_movies) if high_rated_movies else None
+
+def get_description_by_id(movie_id):
+    """
+    Retorna a descrição de um filme pelo ID, buscando em descricoes.json.
+    """
+    try:
+        with open("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\overviews.json", 'r', encoding='utf-8') as f:
+            descricoes = json.load(f)
+        for item in descricoes:
+            if item.get("id") == movie_id:
+                return item.get("overview_pt_br") or item.get("overview", "Descrição não disponível.")
+        return "Descrição não encontrada."
+    except Exception as e:
+        return f"Erro ao buscar descrição: {e}"

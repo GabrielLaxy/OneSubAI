@@ -7,6 +7,7 @@ import Routes from './src/screens/routes';
 import { NavigationContainer } from '@react-navigation/native';
 import { MoviesProvider } from './src/contexts/moviesContext';
 import { UserProvider } from './src/contexts/userContext';
+import { FinalMovieProvider } from './src/contexts/finalMovieContext';
 
 import { useFonts } from 'expo-font';
 import { preventAutoHideAsync, hideAsync } from 'expo-splash-screen';
@@ -36,9 +37,11 @@ export default function App() {
 		<PaperProvider theme={Theme}>
 			<UserProvider>
 				<MoviesProvider>
-					<NavigationContainer>
-						<Routes />
-					</NavigationContainer>
+					<FinalMovieProvider>
+						<NavigationContainer>
+							<Routes />
+						</NavigationContainer>
+					</FinalMovieProvider>
 				</MoviesProvider>
 			</UserProvider>
 		</PaperProvider>

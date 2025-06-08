@@ -37,7 +37,6 @@ const RecPoster = forwardRef(function RecPoster(
 	const translationX = useSharedValue(0);
 	const translationY = useSharedValue(0);
 
-	// Novo mapa de gêneros conforme solicitado
 	const genreMap: Record<number, string> = {
 		1: 'Animação',
 		2: 'Aventura',

@@ -1,7 +1,6 @@
 const BASE_URL =
-	'https://95e3-2804-14c-bf3a-8061-684a-aafa-6be1-977e.ngrok-free.app';
+	'https://6294-2804-14c-bf3a-8061-7420-210a-581f-a59e.ngrok-free.app';
 
-// Envia avaliação de filme
 export async function postMovieResponse(
 	user_id: string,
 	movie_id: number,
@@ -25,7 +24,6 @@ export async function postMovieResponse(
 	}
 }
 
-// Busca recomendação parcial (1 filme)
 export async function getPartialRecommendation(user_id: string) {
 	try {
 		const res = await fetch(BASE_URL + '/recomendar_parcial', {
@@ -45,7 +43,6 @@ export async function getPartialRecommendation(user_id: string) {
 	}
 }
 
-// Busca recomendação final (top 5 filmes)
 export async function getFinalRecommendation(user_id: string) {
 	try {
 		const res = await fetch(BASE_URL + '/recomendar_final', {
@@ -58,14 +55,15 @@ export async function getFinalRecommendation(user_id: string) {
 		if (!res.ok) {
 			throw new Error('Erro ao buscar recomendação final');
 		}
-		return await res.json();
+		const data = await res.json();
+		console.log('✅', data);
+		return await data;
 	} catch (error) {
 		console.error('Erro no getFinalRecommendation:', error);
 		return null;
 	}
 }
 
-// Busca filmes iniciais do backend
 export async function getInitialMovies(user_id: string) {
 	try {
 		const res = await fetch(BASE_URL + '/filmes_iniciais', {
@@ -98,7 +96,6 @@ export async function getMovieById(movie_id: number) {
 			throw new Error('Erro ao buscar filme por ID');
 		}
 		const data = await res.json();
-		console.log('Filme encontrado:', data);
 		return data;
 	} catch (error) {
 		console.error('Erro no getMovieById:', error);
@@ -119,10 +116,29 @@ export async function getRandomMovie(user_id: string) {
 			throw new Error('Erro ao buscar filme aleatório');
 		}
 		const data = await res.json();
-		console.log('Filme aleatório encontrado:', data);
 		return data;
 	} catch (error) {
 		console.error('Erro no getRandomMovie:', error);
+		return null;
+	}
+}
+
+export async function getMovieDescriptionById(movie_id: number) {
+	try {
+		const res = await fetch(BASE_URL + '/descricao_por_id', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ movie_id }),
+		});
+		if (!res.ok) {
+			throw new Error('Erro ao buscar descrição do filme');
+		}
+		const data = await res.json();
+		return data;
+	} catch (error) {
+		console.error('Erro no getMovieDescriptionById:', error);
 		return null;
 	}
 }

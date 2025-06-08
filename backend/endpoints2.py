@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from backend.recomendation.main import *
 from backend.state.session_store import registrar_avaliacao, obter_estado, resetar_usuario
 from backend.recomendation.models import Avaliacao, RecomendacaoResponse
-from backend.fake_db import fake_db_init, fake_db_get_movie_by_id, get_random_good_movie
+from backend.fake_db import fake_db_init, fake_db_get_movie_by_id, get_random_good_movie, get_description_by_id
 
 app = FastAPI()
 
@@ -25,7 +25,7 @@ def avaliar_filme(payload: dict):
         raise HTTPException(status_code=400, detail="Avaliação inválida")
 
 
-    # Removido: adicionar aos avaliados aqui
+    
     if avaliacao == 1:
         registrar_avaliacao(user_id, movie_id, "like")
     elif avaliacao == -1:
@@ -57,9 +57,9 @@ def recomendar_parcial(payload: dict):
     if recomendados and len(recomendados) > 0:
         filme_id = recomendados[0]
         filme = fake_db_get_movie_by_id(filme_id)
-        # Adiciona o filme à lista de avaliados assim que for recomendado
+        
         dados["avaliados"].add(filme_id)
-        print(f"⭐ {dados['avaliados']}")  # <-- Adicione esta linha
+        print(f"⭐ {dados['avaliados']}")  
 
     if filme:
         print(f"🔵 {filme['id']}")
@@ -80,9 +80,15 @@ def recomendar_final(payload: dict):
         ids,
         filmes,
         ignorar_ids=list(dados["avaliados"]),
-        top_n=5,
+        top_n=1,
     )
-    return {"recomendados": recomendados}
+    filme = None
+    if recomendados and len(recomendados) > 0:
+        filme_id = recomendados[0]
+        filme = fake_db_get_movie_by_id(filme_id)
+        dados["avaliados"].add(filme_id)
+
+    return {"recomendados": [filme] if filme else []}
 
 @app.post("/filmes_iniciais")
 def filmes_iniciais(payload: dict):
@@ -93,11 +99,11 @@ def filmes_iniciais(payload: dict):
     dados = obter_estado(user_id)
     enviados = set(f["id"] for f in filmes)
     dados.setdefault("enviados", set()).update(enviados)
-    # Armazena os filmes enviados no estado do usuário
+    
     dados["filmes_iniciais"] = filmes
-    # Adiciona todos os filmes iniciais aos avaliados
+    
     dados["avaliados"].update(enviados)
-    print(f"⭐ {dados['avaliados']}")  # <-- Adicione esta linha
+    print(f"⭐ {dados['avaliados']}")  
     return {"filmes": filmes}
 
 @app.post("/filme_por_id")
@@ -124,10 +130,17 @@ def filme_aleatorio_bom(payload: dict):
     filme = get_random_good_movie(ignorar_ids=ignorar_ids)
     if not filme:
         raise HTTPException(status_code=404, detail="Nenhum filme bom encontrado")
-    # Adiciona o filme aleatório bom aos avaliados
     dados["avaliados"].add(filme["id"])
-    print(f"⭐ {dados['avaliados']}")  # <-- Adicione esta linha
+    print(f"⭐ {dados['avaliados']}") 
     return {"filme": filme}
+
+@app.post("/descricao_por_id")
+def descricao_por_id(payload: dict):
+    movie_id = payload.get("movie_id")
+    if not movie_id:
+        raise HTTPException(status_code=400, detail="ID do filme não fornecido")
+    descricao = get_description_by_id(movie_id)
+    return {"descricao": descricao}
 
 
 if __name__ == "__main__":

@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { IconButton, TouchableRipple } from 'react-native-paper';
 import {
 	postMovieResponse,
 	getPartialRecommendation,
 	getRandomMovie,
+	getFinalRecommendation,
+	getMovieDescriptionById,
 } from '../services/httpsRequests';
 import {
 	useAnimatedReaction,
@@ -22,7 +24,10 @@ export default function RecScreen() {
 	const activeIndex = useSharedValue(0);
 	const [index, setIndex] = useState(0);
 	const [validRatingsCount, setValidRatingsCount] = useState(0);
+	const [receivedMovieIds, setReceivedMovieIds] = useState<number[]>([]);
+	const [finalMovie, setFinalMovie] = useState<any>(null);
 	const { userId } = useUserContext();
+	const { width, height } = Dimensions.get('window');
 
 	const posterRefs = useRef<
 		(null | { like: () => void; dislike: () => void; skip: () => void })[]
@@ -35,10 +40,10 @@ export default function RecScreen() {
 				postMovieResponse(userId, movieId, res)
 					.then(async response => {
 						if (response) {
-							console.log('Resposta enviada com sucesso:', response);
 							if (res === 1 || res === -1) {
 								setValidRatingsCount(prev => {
 									const newCount = prev + 1;
+									setReceivedMovieIds(prevIds => [...prevIds, movieId]);
 									if (newCount >= 2) {
 										getPartialRecommendation(userId)
 											.then(partial => {
@@ -47,10 +52,12 @@ export default function RecScreen() {
 														...prevMovies,
 														partial.recomendados,
 													]);
-													console.log(
-														'Partial recommendation:',
-														partial.recomendados
-													);
+													setReceivedMovieIds(prevIds => [
+														...prevIds,
+														...(Array.isArray(partial.recomendados)
+															? partial.recomendados.map((m: any) => m.id)
+															: [partial.recomendados.id]),
+													]);
 												}
 											})
 											.catch(error =>
@@ -59,13 +66,11 @@ export default function RecScreen() {
 													error
 												)
 											);
-										return 0;
 									}
 									return newCount;
 								});
 							}
 							if (res === 0) {
-								console.log('Usuário deu skip no filme', movieId);
 								getRandomMovie(userId)
 									.then(randomMovie => {
 										if (randomMovie && randomMovie.filme) {
@@ -73,6 +78,7 @@ export default function RecScreen() {
 												...prevMovies,
 												randomMovie.filme,
 											]);
+											// Não adiciona o ID ao receivedMovieIds aqui!
 										}
 									})
 									.catch(error =>
@@ -99,11 +105,6 @@ export default function RecScreen() {
 		}
 	);
 
-	// useEffect(
-	// 	() => console.log('Active Index:', activeIndex.value),
-	// 	[activeIndex.value]
-	// );
-
 	const onLike = () => {
 		posterRefs.current[index]?.like();
 	};
@@ -115,6 +116,29 @@ export default function RecScreen() {
 	const onNeverSeen = () => {
 		posterRefs.current[index]?.skip();
 	};
+
+	useEffect(() => {
+		if (receivedMovieIds.length === 14) {
+			const getAnotherMovie = async () => {
+				const result = await getFinalRecommendation(userId);
+				if (result && result.recomendados && result.recomendados.length > 0) {
+					const movie = result.recomendados[0];
+					// Busca a descrição do filme pelo id
+					const descResult = await getMovieDescriptionById(movie.id);
+					const descricao =
+						descResult && descResult.descricao ? descResult.descricao : '';
+					// Adiciona a descrição ao objeto movie
+					const movieWithDesc = { ...movie, descricao };
+					setFinalMovie(movieWithDesc);
+				}
+			};
+			getAnotherMovie();
+		} 
+	}, [receivedMovieIds, userId]);
+
+	useEffect(() => {
+		console.log('receivedMovieIds atualizados:', receivedMovieIds);
+	}, [receivedMovieIds]);
 
 	return (
 		<View style={styles.container}>
