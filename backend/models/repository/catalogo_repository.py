@@ -15,16 +15,10 @@ class CatalogoRepository:
         collection.insert_many(list_of_documents)
         return list_of_documents
     
-    def select_many(self, filter) -> List[Dict]:
+    def select_many(self, filter: dict = {}) -> List[Dict]:
         collection = self.__db_connection.get_collection(self.__collection_name)
-        data = collection.find(
-            filter,
-            {"image_path": 1}
-        )
-
-        response = []
-        for elem in data: response.append(elem)
-        return response 
+        data = collection.find(filter)
+        return list(data)
     
     def select_one(self, filter) -> Dict:
         collection = self.__db_connection.get_collection(self.__collection_name)
