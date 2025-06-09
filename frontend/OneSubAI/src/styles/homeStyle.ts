@@ -38,11 +38,12 @@ const styles = StyleSheet.create({
 	dashboardParagraph: {
 		fontSize: 15,
 		color: theme.colors.labels,
+		fontFamily: 'Poppins-Regular',
 	},
 
 	dashboardTitle: {
 		fontSize: 30,
-		fontWeight: '700',
+		fontFamily: 'Poppins-SemiBold',
 	},
 
 	dashboardLabels: {
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
 	labelText: {
 		textTransform: 'capitalize',
 		fontSize: 13,
-		fontWeight: '600',
+		fontFamily: 'Poppins-SemiBold',
 	},
 
 	scaleContainer: {
@@ -79,6 +80,7 @@ const styles = StyleSheet.create({
 
 	scaleText: {
 		fontSize: 12,
+		fontFamily: 'Poppins-Regular',
 		color: theme.colors.labels,
 		position: 'absolute',
 		right: 0,
@@ -117,6 +119,8 @@ const styles = StyleSheet.create({
 		width: 50,
 		textAlign: 'center',
 		color: theme.colors.labels,
+		fontFamily: 'Poppins-Regular',
+		fontSize: 11
 	},
 
 	dashLineBase: {
@@ -141,7 +145,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		left: -55,
 		fontSize: 12,
-		fontWeight: 'bold',
+		fontFamily: 'Poppins-Bold',
 		transform: [{ translateX: -2.8 }, { translateY: -10 }],
 	},
 
@@ -151,15 +155,17 @@ const styles = StyleSheet.create({
 
 	subscribesTexts: {
 		marginBottom: 15,
+		fontFamily: 'Poppins-Regular',
 	},
 
 	subscribesTitle: {
 		fontSize: 25,
-		fontWeight: 700,
+		fontFamily: 'Poppins-SemiBold',
 	},
 
 	subscribesParagraph: {
 		fontSize: 15,
+		fontFamily: 'Poppins-Regular',
 		color: theme.colors.labels,
 	},
 
@@ -180,18 +186,19 @@ const styles = StyleSheet.create({
 
 	streamingTitle: {
 		fontSize: 15,
-		fontWeight: 700,
+		fontFamily: 'Poppins-SemiBold',
 	},
 
 	subscribeExpirationAlert: {
 		fontSize: 10,
+		fontFamily: 'Poppins-Regular',
 		color: theme.colors.labels,
 	},
 
 	subscribePreco: {
 		marginTop: 10,
 		fontSize: 15,
-		fontWeight: 600,
+		fontFamily: 'Poppins-SemiBold',
 	},
 
 	streamingImage: {

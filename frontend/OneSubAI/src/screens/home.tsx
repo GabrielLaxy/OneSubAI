@@ -108,8 +108,8 @@ export default function Home() {
 		},
 		{
 			id: 3,
-			image: require('../../assets/PrimeVideo-Logo.png'),
-			streaming: 'Prime Video',
+			image: require('../../assets/Max-Logo.png'),
+			streaming: 'Max',
 			dataExpiracao: new Date('2025-06-30'),
 			preco: 'R$ 36,90',
 		},
@@ -160,7 +160,7 @@ export default function Home() {
 	}, [filter]);
 
 	return (
-		<View style={{ flex: 1, backgroundColor: theme.colors.accent }}>
+		<View style={{ flex: 1, backgroundColor: theme.colors.primary }}>
 			<StatusBar animated={true} style="light" />
 			<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 				<View style={styles.fakeHeader}>
@@ -172,14 +172,20 @@ export default function Home() {
 							marginBottom: 60,
 						}}
 					>
-						<Text style={{ color: 'white', fontSize: 14, fontWeight: 600 }}>
+						<Text
+							style={{
+								color: 'white',
+								fontSize: 14,
+								fontFamily: 'Poppins-SemiBold',
+							}}
+						>
 							Gastos ativos
 						</Text>
 						<Text
 							style={{
 								color: 'white',
 								fontSize: 36,
-								fontWeight: 'bold',
+								fontFamily: 'Poppins-SemiBold',
 								marginTop: 4,
 							}}
 						>
@@ -414,7 +420,7 @@ export default function Home() {
 						>
 							<View style={styles.subs}>
 								{subs.map(sub => (
-									<View style={styles.subscribeSquare}>
+									<View key={sub.id} style={styles.subscribeSquare}>
 										<Image
 											source={sub.image}
 											style={styles.streamingImage}
