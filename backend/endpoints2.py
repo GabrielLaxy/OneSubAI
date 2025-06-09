@@ -10,7 +10,7 @@ from backend.fake_db import fake_db_init, fake_db_get_movie_by_id, get_random_go
 
 app = FastAPI()
 
-filmes = carregar_filmes("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\limpo.json")
+filmes = carregar_filmes("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\catalogo_teste.json")
 vetores, ids = gerar_vetores(filmes)
 
 @app.post("/avaliar")
@@ -44,6 +44,10 @@ def recomendar_parcial(payload: dict):
         list(dados["likes"]), list(dados["dislikes"]), vetores, ids
     )
 
+    print("Perfil:", perfil)
+    print("Likes:", dados["likes"])
+    print("Dislikes:", dados["dislikes"])
+
     recomendados = recomendar(
         perfil,
         vetores,
@@ -73,6 +77,10 @@ def recomendar_final(payload: dict):
     perfil = construir_perfil_usuario(
         list(dados["likes"]), list(dados["dislikes"]), vetores, ids
     )
+
+    print("Perfil final:", perfil)
+    print("Likes final:", dados["likes"])
+    print("Dislikes final:", dados["dislikes"])
 
     recomendados = recomendar(
         perfil,

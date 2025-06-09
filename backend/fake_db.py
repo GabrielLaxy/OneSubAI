@@ -3,18 +3,18 @@ import random
 
 def fake_db_init():
     """
-    Recebe uma lista de filmes do arquivo limpo.json e retorna 8 filmes aleatórios com tmdb_rating > 8.
+    Recebe uma lista de filmes do arquivo e retorna 8 filmes aleatórios com tmdb_rating > 8.
     """
-    with open("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\limpo.json", 'r', encoding='utf-8') as f:
+    with open("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\catalogo_teste.json", 'r', encoding='utf-8') as f:
         json_data = json.load(f)
-    high_rated_movies = [movie for movie in json_data if movie.get("tmdb_rating", 0) > 8]
+    high_rated_movies = [movie for movie in json_data if movie.get("tmdb_rating", 0) > 8 and movie.get("vote_count", 0) > 10000]
     return random.sample(high_rated_movies, min(8, len(high_rated_movies)))
 
 def fake_db_get_movie_by_id(movie_id):
     """
-    Recebe um ID de filme e retorna o filme correspondente do arquivo limpo.json.
+    Recebe um ID de filme e retorna o filme correspondente do arquivo.
     """
-    with open("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\limpo.json", 'r', encoding='utf-8') as f:
+    with open("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\catalogo_teste.json", 'r', encoding='utf-8') as f:
         json_data = json.load(f)
     for movie in json_data:
         if movie.get("id") == movie_id:
@@ -27,11 +27,13 @@ def get_random_good_movie(ignorar_ids=None):
     """
     if ignorar_ids is None:
         ignorar_ids = set()
-    with open("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\limpo.json", 'r', encoding='utf-8') as f:
+    with open("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\catalogo_teste.json", 'r', encoding='utf-8') as f:
         json_data = json.load(f)
     high_rated_movies = [
         movie for movie in json_data
-        if movie.get("tmdb_rating", 0) > 8 and movie.get("id") not in ignorar_ids
+        if movie.get("tmdb_rating", 0) > 8
+        and movie.get("vote_count", 0) > 15000
+        and movie.get("id") not in ignorar_ids  # <-- filtro para não repetir
     ]
     return random.choice(high_rated_movies) if high_rated_movies else None
 

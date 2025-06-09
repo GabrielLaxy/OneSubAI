@@ -17,16 +17,17 @@ import {
 import RecPoster from '../components/recPoster';
 import { useMovies } from '../contexts/moviesContext';
 import { useUserContext } from '../contexts/userContext';
+import { useFinalMovie } from '../contexts/finalMovieContext';
 import styles from '../styles/recScreenStyle';
 
-export default function RecScreen() {
+export default function RecScreen({ navigation }: any) {
 	const { movies, setMovies } = useMovies();
 	const activeIndex = useSharedValue(0);
 	const [index, setIndex] = useState(0);
 	const [validRatingsCount, setValidRatingsCount] = useState(0);
 	const [receivedMovieIds, setReceivedMovieIds] = useState<number[]>([]);
-	const [finalMovie, setFinalMovie] = useState<any>(null);
 	const { userId } = useUserContext();
+	const { setFinalMovie } = useFinalMovie(); // use o contexto aqui
 	const { width, height } = Dimensions.get('window');
 
 	const posterRefs = useRef<
@@ -78,7 +79,6 @@ export default function RecScreen() {
 												...prevMovies,
 												randomMovie.filme,
 											]);
-											// Não adiciona o ID ao receivedMovieIds aqui!
 										}
 									})
 									.catch(error =>
@@ -118,22 +118,28 @@ export default function RecScreen() {
 	};
 
 	useEffect(() => {
-		if (receivedMovieIds.length === 14) {
+		if (receivedMovieIds.length === 20) {
 			const getAnotherMovie = async () => {
 				const result = await getFinalRecommendation(userId);
 				if (result && result.recomendados && result.recomendados.length > 0) {
 					const movie = result.recomendados[0];
-					// Busca a descrição do filme pelo id
 					const descResult = await getMovieDescriptionById(movie.id);
-					const descricao =
+					const overview =
 						descResult && descResult.descricao ? descResult.descricao : '';
-					// Adiciona a descrição ao objeto movie
-					const movieWithDesc = { ...movie, descricao };
-					setFinalMovie(movieWithDesc);
+					const movieWithDesc = {
+						id: movie.id,
+						poster_url: movie.poster_url,
+						title_pt_br: movie.title_pt_br,
+						genres: Array.isArray(movie.genres) ? movie.genres : [],
+						providers: Array.isArray(movie.providers) ? movie.providers : [],
+						overview,
+					};
+					setFinalMovie(movieWithDesc); // agora salva no contexto
+					navigation.navigate('FinalRec');
 				}
 			};
 			getAnotherMovie();
-		} 
+		}
 	}, [receivedMovieIds, userId]);
 
 	useEffect(() => {

@@ -1,6 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Theme from './src/theme';
 import { PaperProvider } from 'react-native-paper';
 import Routes from './src/screens/routes';

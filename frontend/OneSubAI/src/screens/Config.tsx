@@ -1,150 +1,148 @@
-import React from 'react';
-import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
-import { Button, Card } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { Switch, TouchableRipple, Divider, Button } from 'react-native-paper';
+import theme from '../theme';
 
-const PlansScreen = () => {
-  return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.logoText}>OneSub AI</Text>
-        <Text style={styles.subtitle}>
-          Encontre seu próximo filme {'\n'}
-          <Text style={styles.bold}>preferido usando Inteligência{'\n'}Artificial</Text>
-        </Text>
+export default function Config({ navigation }: any) {
+	const [notificacoes, setNotificacoes] = useState(false);
 
-        {/* Plano Standard */}
-        <Card style={styles.card}>
-          <Card.Content style={styles.cardContent}>
-            <View style={styles.cardHeader}>
-              <Image source={require('../../assets/logo.png')} style={styles.planIcon} />
-              <Text style={styles.planTitle}>Standard</Text>
-            </View>
-            {renderBenefitList(3, true)}
-            <Text style={styles.disabledBenefit}>• Benefício: Lorem ipsum dolor sit amet</Text>
-          </Card.Content>
-          <Button mode="contained" style={styles.button} labelStyle={styles.buttonLabel}>
-            Escolher este plano
-          </Button>
-        </Card>
+	return (
+		<View style={styles.container}>
+			<StatusBar animated={true} style="auto" />
+			<View style={styles.header}>
+				<Image
+					source={{ uri: 'https://i.imgur.com/DbANp4g.jpeg' }} // imagem de exemplo
+					style={styles.profileImage}
+				/>
+				<Text style={styles.name}>Humberto Souza</Text>
+			</View>
 
-        {/* Plano Pro */}
-        <Card style={styles.card}>
-          <Card.Content style={styles.cardContent}>
-            <View style={styles.cardHeader}>
-              <Icon name="crown" size={24} color="#7B2CBF" />
-              <Text style={styles.planTitle}>Pro</Text>
-            </View>
-            {renderBenefitList(3, true)}
-            <Text style={styles.disabledBenefit}>• Benefício: Lorem ipsum dolor sit amet</Text>
-          </Card.Content>
-          <Button mode="contained" style={styles.button} labelStyle={styles.buttonLabel}>
-            Escolher este plano
-          </Button>
-        </Card>
-      </ScrollView>
+			<View style={styles.section}>
+				<Text style={styles.sectionTitle}>Conta</Text>
+				<TouchableRipple
+					onPress={() => console.log('Pressed')}
+					rippleColor="rgba(0, 0, 0, 0.1)"
+				>
+					<View style={styles.option}>
+						<Ionicons name="create-outline" size={22} />
+						<Text style={styles.optionText}>Editar Nome</Text>
+					</View>
+				</TouchableRipple>
+				<Divider />
+				<TouchableRipple
+					onPress={() => console.log('Pressed')}
+					rippleColor="rgba(0, 0, 0, .2)"
+				>
+					<View style={styles.option}>
+						<Ionicons name="lock-closed-outline" size={22} />
+						<Text style={styles.optionText}>Alterar Senha</Text>
+					</View>
+				</TouchableRipple>
+				<Divider />
+				<TouchableRipple
+					onPress={() => console.log('Pressed')}
+					rippleColor="rgba(0, 0, 0, .2)"
+				>
+					<View style={styles.option}>
+						<FontAwesome name="credit-card" size={22} />
+						<Text style={styles.optionText}>Minhas Assinaturas</Text>
+					</View>
+				</TouchableRipple>
+				<Divider />
+			</View>
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <Icon name="view-grid" size={28} color="#7B2CBF" />
-        <Icon name="home" size={28} color="#7B2CBF" />
-        <Icon name="account" size={28} color="#7B2CBF" />
-      </View>
-    </View>
-  );
-};
-
-// Lista de benefícios
-const renderBenefitList = (count: number, enabled: boolean) => {
-  return Array.from({ length: count }).map((_, i) => (
-    <Text key={i} style={enabled ? styles.benefit : styles.disabledBenefit}>
-      • Benefício: Lorem ipsum dolor sit amet
-    </Text>
-  ));
-};
-
-export default PlansScreen;
+			<View style={styles.section}>
+				<Text style={styles.sectionTitle}>Preferências</Text>
+				<View style={styles.option}>
+					<Ionicons name="notifications-outline" size={22} />
+					<Text style={styles.optionText}>Notificações</Text>
+					<Switch
+						theme={theme}
+						style={{ marginLeft: 'auto' }}
+						value={notificacoes}
+						onValueChange={setNotificacoes}
+					/>
+				</View>
+			</View>
+			<View style={{ marginTop: 20, paddingHorizontal: 20 }}>
+				<Button
+					icon="exit-to-app"
+					mode="contained"
+					onPress={() => navigation.navigate('Login')}
+				>
+					Press me
+				</Button>
+			</View>
+		</View>
+	);
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#7B2CBF',
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 100,
-  },
-  logoText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    marginVertical: 8,
-  },
-  subtitle: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 14,
-    marginBottom: 20,
-  },
-  bold: {
-    fontWeight: 'bold',
-  },
-  card: {
-    borderRadius: 16,
-    marginBottom: 24,
-  },
-  cardContent: {
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  planIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
-  },
-  planTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  benefit: {
-    fontSize: 14,
-    color: '#000',
-    marginVertical: 2,
-  },
-  disabledBenefit: {
-    fontSize: 14,
-    color: 'gray',
-    marginVertical: 2,
-  },
-  button: {
-    backgroundColor: '#7B2CBF',
-    borderRadius: 50,
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  buttonLabel: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  bottomNav: {
-    position: 'absolute',
-    bottom: 16,
-    left: 32,
-    right: 32,
-    backgroundColor: 'white',
-    borderRadius: 32,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 5,
-  },
+	container: { flex: 1, backgroundColor: theme.colors.background },
+	header: {
+		alignItems: 'center',
+		backgroundColor: theme.colors.primary,
+		paddingVertical: 20,
+		borderBottomLeftRadius: 30,
+		borderBottomRightRadius: 30,
+	},
+	logo: {
+		fontSize: 18,
+		color: '#fff',
+		fontWeight: 'bold',
+		marginBottom: 10,
+	},
+	profileImage: {
+		width: 90,
+		height: 90,
+		borderRadius: 45,
+		borderWidth: 2,
+		borderColor: '#fff',
+	},
+	name: {
+		color: '#fff',
+		fontFamily: 'Poppins-SemiBold',
+		fontSize: 18,
+		marginTop: 10,
+		fontWeight: '600',
+	},
+	section: {
+		marginTop: 20,
+		paddingHorizontal: 20,
+	},
+	sectionTitle: {
+		fontSize: 16,
+		fontFamily: 'Poppins-Bold',
+		marginBottom: 10,
+		color: '#333',
+	},
+	option: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		borderRadius: 50,
+		justifyContent: 'flex-start',
+		paddingVertical: 12,
+		borderBottomColor: theme.colors.placeholder,
+	},
+	optionText: {
+		fontFamily: 'Poppins-Regular',
+		fontSize: 16,
+		marginLeft: 10,
+	},
+	logoutButton: {
+		marginTop: 'auto',
+		backgroundColor: theme.colors.primary,
+		margin: 20,
+		borderRadius: 20,
+		paddingVertical: 12,
+		alignItems: 'center',
+	},
+	logoutText: {
+		color: '#fff',
+		fontSize: 16,
+		fontWeight: '600',
+	},
 });

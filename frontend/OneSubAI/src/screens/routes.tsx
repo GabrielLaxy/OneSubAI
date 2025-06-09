@@ -178,7 +178,7 @@ export default function Routes() {
 				component={TabRoutes}
 				options={StackHeaderOp}
 			/>
-			<Stack.Screen name="Config" component={Config} options={StackHeaderOp} />
+			<Stack.Screen name="Config" component={Config} options={HeaderOp} />
 			<Stack.Screen name="RecScreen" component={RecScreen} options={HeaderOp} />
 			<Stack.Screen
 				name="RecOptions"

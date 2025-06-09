@@ -136,6 +136,7 @@ export async function getMovieDescriptionById(movie_id: number) {
 			throw new Error('Erro ao buscar descrição do filme');
 		}
 		const data = await res.json();
+		console.log('⭐', data);
 		return data;
 	} catch (error) {
 		console.error('Erro no getMovieDescriptionById:', error);

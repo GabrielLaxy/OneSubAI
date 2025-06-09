@@ -1,150 +1,289 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
 import { Button, Card } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
-const PlansScreen = () => {
-  return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.logoText}>OneSub AI</Text>
-        <Text style={styles.subtitle}>
-          Encontre seu próximo filme {'\n'}
-          <Text style={styles.bold}>preferido usando Inteligência{'\n'}Artificial</Text>
-        </Text>
+import { getInitialMovies } from '../services/httpsRequests';
+import { useMovies } from '../contexts/moviesContext';
+import { useUserContext } from '../contexts/userContext';
 
-        {/* Plano Standard */}
-        <Card style={styles.card}>
-          <Card.Content style={styles.cardContent}>
-            <View style={styles.cardHeader}>
-              <Image source={require('../../assets/logo.png')} style={styles.planIcon} />
-              <Text style={styles.planTitle}>Standard</Text>
-            </View>
-            {renderBenefitList(3, true)}
-            <Text style={styles.disabledBenefit}>• Benefício: Lorem ipsum dolor sit amet</Text>
-          </Card.Content>
-          <Button mode="contained" style={styles.button} labelStyle={styles.buttonLabel}>
-            Escolher este plano
-          </Button>
-        </Card>
+import theme from '../theme';
 
-        {/* Plano Pro */}
-        <Card style={styles.card}>
-          <Card.Content style={styles.cardContent}>
-            <View style={styles.cardHeader}>
-              <Icon name="crown" size={24} color="#7B2CBF" />
-              <Text style={styles.planTitle}>Pro</Text>
-            </View>
-            {renderBenefitList(3, true)}
-            <Text style={styles.disabledBenefit}>• Benefício: Lorem ipsum dolor sit amet</Text>
-          </Card.Content>
-          <Button mode="contained" style={styles.button} labelStyle={styles.buttonLabel}>
-            Escolher este plano
-          </Button>
-        </Card>
-      </ScrollView>
+export default function PlansScreen({ navigation }: any) {
+	const { setMovies } = useMovies();
+	const { userId } = useUserContext();
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <Icon name="view-grid" size={28} color="#7B2CBF" />
-        <Icon name="home" size={28} color="#7B2CBF" />
-        <Icon name="account" size={28} color="#7B2CBF" />
-      </View>
-    </View>
-  );
-};
+	async function handleMovies() {
+		const data = await getInitialMovies(userId);
+		if (data && data.filmes) {
+			setMovies(data.filmes);
+		}
+		navigation.navigate('RecScreen');
+	}
 
-// Lista de benefícios
-const renderBenefitList = (count: number, enabled: boolean) => {
-  return Array.from({ length: count }).map((_, i) => (
-    <Text key={i} style={enabled ? styles.benefit : styles.disabledBenefit}>
-      • Benefício: Lorem ipsum dolor sit amet
-    </Text>
-  ));
-};
-
-export default PlansScreen;
+	return (
+		<View style={styles.container}>
+			<ScrollView contentContainerStyle={styles.content}>
+				<Text style={styles.subtitle}>
+					Encontre seu próximo filme {'\n'}
+					<Text style={styles.bold}>
+						preferido usando Inteligência{'\n'}Artificial
+					</Text>
+				</Text>
+				<Card style={styles.card}>
+					<Card.Content style={styles.cardContent}>
+						<View style={{ alignItems: 'center', justifyContent: 'center' }}>
+							<View style={styles.cardHeader}>
+								<Image
+									source={require('../../assets/logo-roxo.png')}
+									style={styles.planIcon}
+								/>
+								<Text style={styles.planTitle}>Standard</Text>
+							</View>
+						</View>
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'flex-start',
+								justifyContent: 'flex-start',
+								marginBottom: 4,
+							}}
+						>
+							<View style={styles.dot} />
+							<Text style={styles.benefit}>
+								Comece a descobrir filmes com o seu estilo
+							</Text>
+						</View>
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'flex-start',
+								justifyContent: 'flex-start',
+								marginBottom: 4,
+							}}
+						>
+							<View style={styles.dot} />
+							<Text style={styles.benefit}>
+								Recomendações simples baseadas no que você curte
+							</Text>
+						</View>
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'flex-start',
+								justifyContent: 'flex-start',
+								marginBottom: 4,
+							}}
+						>
+							<View style={styles.dot} />
+							<Text style={styles.benefit}>
+								Explore sugestões e encontre algo novo para assistir.
+							</Text>
+						</View>
+					</Card.Content>
+					<Button
+						mode="contained"
+						style={styles.button}
+						labelStyle={styles.buttonLabel}
+						onPress={handleMovies}
+					>
+						Iniciar
+					</Button>
+				</Card>
+				<Card style={styles.card}>
+					<Card.Content style={styles.cardContent}>
+						<View style={{ alignItems: 'center', justifyContent: 'center' }}>
+							<View style={styles.cardHeader}>
+								<Image
+									source={require('../../assets/logo-pro.png')}
+									style={styles.planIcon2}
+								/>
+								<Text style={styles.planTitle}>Pro</Text>
+							</View>
+						</View>
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'flex-start',
+								justifyContent: 'flex-start',
+								marginBottom: 4,
+							}}
+						>
+							<View style={styles.dot} />
+							<Text style={styles.benefit}>
+								Recomendações inteligentes feitas sob medida pra você
+							</Text>
+						</View>
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'flex-start',
+								justifyContent: 'flex-start',
+								marginBottom: 4,
+							}}
+						>
+							<View style={styles.dot} />
+							<Text style={styles.benefit}>
+								Algoritmo avançado que entende seu gosto como ninguém
+							</Text>
+						</View>
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'flex-start',
+								justifyContent: 'flex-start',
+								marginBottom: 4,
+							}}
+						>
+							<View style={styles.dot} />
+							<Text style={styles.benefit}>
+								Descubra títulos certeiros com personalização total
+							</Text>
+						</View>
+					</Card.Content>
+					<Button
+						mode="contained"
+						style={styles.button}
+						labelStyle={styles.buttonLabel}
+						onPress={() => {}}
+						disabled
+					>
+						Escolher este plano
+					</Button>
+					<View style={styles.commingSoon}>
+						<AntDesign
+							name="lock1"
+							size={160}
+							color="white"
+							style={styles.commingSoonIcon}
+						/>
+						<Text style={styles.commingSoonText}>Em breve</Text>
+					</View>
+				</Card>
+			</ScrollView>
+		</View>
+	);
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#7B2CBF',
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 100,
-  },
-  logoText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    marginVertical: 8,
-  },
-  subtitle: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 14,
-    marginBottom: 20,
-  },
-  bold: {
-    fontWeight: 'bold',
-  },
-  card: {
-    borderRadius: 16,
-    marginBottom: 24,
-  },
-  cardContent: {
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  planIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
-  },
-  planTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  benefit: {
-    fontSize: 14,
-    color: '#000',
-    marginVertical: 2,
-  },
-  disabledBenefit: {
-    fontSize: 14,
-    color: 'gray',
-    marginVertical: 2,
-  },
-  button: {
-    backgroundColor: '#7B2CBF',
-    borderRadius: 50,
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  buttonLabel: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  bottomNav: {
-    position: 'absolute',
-    bottom: 16,
-    left: 32,
-    right: 32,
-    backgroundColor: 'white',
-    borderRadius: 32,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 5,
-  },
+	container: {
+		flex: 1,
+		backgroundColor: '#7B2CBF',
+	},
+	content: {
+		padding: 16,
+		paddingBottom: 100,
+	},
+	logoText: {
+		color: 'white',
+		fontSize: 18,
+		fontWeight: 'bold',
+		alignSelf: 'center',
+		marginVertical: 8,
+	},
+	subtitle: {
+		color: 'white',
+		fontFamily: 'Poppins-Regular',
+		textAlign: 'center',
+		fontSize: 14,
+		marginBottom: 20,
+	},
+	bold: {
+		fontFamily: 'Poppins-Bold',
+	},
+	card: {
+		borderRadius: 16,
+		marginBottom: 24,
+		overflow: 'hidden',
+	},
+	cardContent: {
+		paddingVertical: 16,
+		paddingHorizontal: 20,
+	},
+	cardHeader: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginBottom: 12,
+		gap: 10,
+	},
+	planIcon: {
+		width: 450 / 15,
+		height: 687 / 15,
+	},
+	planIcon2: {
+		width: 592 / 15,
+		height: 687 / 15,
+	},
+	planTitle: {
+		fontSize: 30,
+		fontFamily: 'Poppins-Bold',
+	},
+	benefit: {
+		fontFamily: 'Poppins-Regular',
+		fontSize: 14,
+		color: '#535353',
+		marginVertical: 2,
+	},
+	disabledBenefit: {
+		fontSize: 14,
+		color: 'gray',
+		marginVertical: 2,
+	},
+	button: {
+		backgroundColor: theme.colors.primary,
+		fontFamily: 'Poppins-Medium',
+		borderRadius: 50,
+		marginHorizontal: 16,
+		marginBottom: 16,
+	},
+	buttonLabel: {
+		color: 'white',
+		fontFamily: 'Poppins-Medium',
+	},
+	bottomNav: {
+		position: 'absolute',
+		bottom: 16,
+		left: 32,
+		right: 32,
+		backgroundColor: 'white',
+		borderRadius: 32,
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		paddingVertical: 12,
+		shadowColor: '#000',
+		shadowOpacity: 0.1,
+		shadowRadius: 6,
+		elevation: 5,
+	},
+	dot: {
+		width: 7,
+		height: 7,
+		borderRadius: 5,
+		backgroundColor: theme.colors.primary,
+		marginTop: 8,
+		marginRight: 8,
+	},
+	commingSoon: {
+		...StyleSheet.absoluteFillObject,
+		backgroundColor: 'rgba(0, 0, 0, 0.86)',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 16,
+		zIndex: 2,
+	},
+	commingSoonIcon: {
+		position: 'absolute',
+		top: '50%',
+		left: '50%',
+		transform: [{ translateX: -80 }, { translateY: -80 }],
+		opacity: 0.25,
+	},
+	commingSoonText: {
+		color: 'white',
+		fontSize: 32,
+		fontFamily: 'Poppins-Bold',
+		textAlign: 'center',
+		letterSpacing: 1,
+		zIndex: 2,
+	},
 });
