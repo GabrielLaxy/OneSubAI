@@ -50,6 +50,8 @@ const theme = {
 		text: '#000000', //preto
 		placeholder: '#A7A7A7', //cinza
 		outline: '#FFFFFF',
+		labels: '#7D7D7D', //cinza um pouco claro
+		dashboardBorder: '#D9D9D9' //cinza claro
 	},
 };
 
