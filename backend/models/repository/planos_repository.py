@@ -6,62 +6,38 @@ class PlanosRepository:
         self.__db_connection = db_connection
 
     def insert_document(self, document: Dict) -> Dict:
-        collection = self.__db_connection.get_collection(self.__collection_name )
-        collection.insert_one(document)
+        collection = self.get_collection()
+        result = collection.insert_one(document)
+        document["_id"] = result.inserted_id
         return document
-    
+
     def insert_list_of_documents(self, list_of_documents: List[Dict]) -> List[Dict]:
-        collection = self.__db_connection.get_collection(self.__collection_name)
-        collection.insert_many(list_of_documents)
+        collection = self.get_collection()
+        result = collection.insert_many(list_of_documents)
+        for doc, _id in zip(list_of_documents, result.inserted_ids):
+            doc["_id"] = _id
         return list_of_documents
-    
-    def select_many(self, filter) -> List[Dict]:
-        collection = self.__db_connection.get_collection(self.__collection_name)
-        data = collection.find(
-            filter,
-            {"image_path": 1}
-        )
 
-        response = []
-        for elem in data: response.append(elem)
-        return response 
-    
-    def select_one(self, filter) -> Dict:
-        collection = self.__db_connection.get_collection(self.__collection_name)
-        response = collection.find_one(filter, {"_id": 0})
-        return response
-    
-    def select_if_property_exists(self) -> None:
-        collection = self.__db_connection.get_collection(self.__collection_name)
-        data = collection.find({ "tipo": { "$contains": "premium" } })
-        for elem in data: print(elem)
+    def select_one(self, filter: Dict) -> Union[Dict, None]:
+        collection = self.get_collection()
+        return collection.find_one(filter, {"_id": 0})
 
-    def select_many_order(self, filter):
-        collection = self.__db_connection.get_collection(self.__collection_name)
-        data = collection.find(
-            filter, 
-            {"userId": 1, "image_path": 1} # Opcoes de retorno
-        ).sort([("userId", 1)])
+    def select_many(self, filter: Dict, projection: Dict = None) -> List[Dict]:
+        collection = self.get_collection()
+        data = collection.find(filter, projection or {})
+        return list(data)
 
-        for elem in data: print(elem)
+    def edit_registry(self, filter: Dict, update_fields: Dict) -> int:
+        collection = self.get_collection()
+        result = collection.update_one(filter, {"$set": update_fields})
+        return result.modified_count
 
-    def edit_registry(self,filter, name) -> None:
-        collection = self.__db_connection.get_collection(self.__collection_name)
-        data = collection.update_one(
-            filter, #Filtro
-            { "$set": { "nome": name } } # Campo de edição
-        )
-        print(data.modified_count)
+    def edit_many_increment(self, filter: Dict, field: str, value: int) -> int:
+        collection = self.get_collection()
+        result = collection.update_many(filter, {"$inc": {field: value}})
+        return result.modified_count
 
-    def edit_many_increment(self, filter, num) -> None:
-        collection = self.__db_connection.get_collection(self.__collection_name)
-        data = collection.update_many(
-            filter, #Filtro
-            { "$inc": { "idade": num } }
-        )
-        print(data.modified_count)
-
-    def delete_registry(self, filter) -> None:
-        collection = self.__db_connection.get_collection(self.__collection_name)
-        data = collection.delete_one(filter)
-        print(data.deleted_count)
+    def delete_registry(self, filter: Dict) -> int:
+        collection = self.get_collection()
+        result = collection.delete_one(filter)
+        return result.deleted_count
