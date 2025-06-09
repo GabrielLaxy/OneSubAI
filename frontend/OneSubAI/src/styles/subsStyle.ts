@@ -8,10 +8,10 @@ const styles = StyleSheet.create({
 	},
 
 	fakeHeaderContent: {
-		flex: 1, // ocupa toda a altura do fakeHeader
-		justifyContent: 'center', // centraliza verticalmente
-		alignItems: 'center', // centraliza horizontalmente
-		paddingHorizontal: 20, // opcional, para não grudar nas laterais
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		paddingHorizontal: 20,
 	},
 
 	secondLayer: {
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
 	},
 
 	plan: {
-        color: theme.colors.labels,
+		color: theme.colors.labels,
 		fontFamily: 'Poppins-Regular',
 		fontSize: 11,
 	},
