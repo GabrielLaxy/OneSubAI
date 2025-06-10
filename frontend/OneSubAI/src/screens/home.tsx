@@ -94,21 +94,21 @@ export default function Home() {
 	const subs = [
 		{
 			id: 1,
-			image: require('../../assets/Netflix-Logo.png'),
+			image: require('../../assets/providers-logo/netflix-logo-hd.png'),
 			streaming: 'Netflix',
 			dataExpiracao: new Date('2025-06-06'),
 			preco: 'R$ 54,90',
 		},
 		{
 			id: 2,
-			image: require('../../assets/PrimeVideo-Logo.png'),
+			image: require('../../assets/providers-logo/prime-video-logo-hd.png'),
 			streaming: 'Prime Video',
 			dataExpiracao: new Date('2025-06-30'),
 			preco: 'R$ 36,90',
 		},
 		{
 			id: 3,
-			image: require('../../assets/Max-Logo.png'),
+			image: require('../../assets/providers-logo/max-logo-hd.png'),
 			streaming: 'Max',
 			dataExpiracao: new Date('2025-06-30'),
 			preco: 'R$ 36,90',

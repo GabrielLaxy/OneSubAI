@@ -15,7 +15,7 @@ import theme from '../theme';
 const subs = [
 	{
 		id: 1,
-		image: require('../../assets/Netflix-Logo.png'),
+		image: require('../../assets/providers-logo/netflix-logo-hd.png'),
 		streaming: 'Netflix',
 		dataExpiracao: new Date('2025-06-06'),
 		price: 'R$ 44,90',
@@ -23,7 +23,7 @@ const subs = [
 	},
 	{
 		id: 2,
-		image: require('../../assets/PrimeVideo-Logo.png'),
+		image: require('../../assets/providers-logo/prime-video-logo-hd.png'),
 		streaming: 'Prime Video',
 		dataExpiracao: new Date('2025-06-30'),
 		price: 'R$ 166,80',
