@@ -65,3 +65,13 @@ class CatalogoOverviewRepository:
         collection = self.__db_connection.get_collection(self.__collection_name)
         data = collection.delete_one(filter)
         print(data.deleted_count)
+
+    def get_description_by_id(self, movie_id) -> str:
+        try:
+            collection = self.__db_connection.get_collection(self.__collection_name)
+            item = collection.find_one({"id": movie_id}, {"_id": 0, "overview_pt_br": 1, "overview": 1})
+            if item:
+                return item.get("overview_pt_br") or item.get("overview", "Descrição não disponível.")
+            return "Descrição não encontrada."
+        except Exception as e:
+            return f"Erro ao buscar descrição: {e}"

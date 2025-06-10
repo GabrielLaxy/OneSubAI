@@ -1,5 +1,5 @@
 const BASE_URL =
-	'https://e099-2804-14c-bf3a-8061-54-dc04-6d76-dd5a.ngrok-free.app';
+	'https://2e54-2804-14c-bf3a-8061-5113-7ce7-1e33-6488.ngrok-free.app';
 
 export async function postMovieResponse(
 	user_id: string,

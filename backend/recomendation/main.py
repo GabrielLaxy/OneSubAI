@@ -31,9 +31,8 @@ PROVIDER_IDS = {
 }
 
 
-def carregar_filmes(path_to_json):
-    with open(path_to_json, encoding='utf-8') as f:
-        return json.load(f)
+def carregar_filmes(filmes_db: list[dict]):
+    return filmes_db
 
 def gerar_vetores(filmes, peso_generos=2.0, peso_providers=0.0, peso_texto=1.5):
     textos = [

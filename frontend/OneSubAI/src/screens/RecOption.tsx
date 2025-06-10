@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
 import { Button, Card } from 'react-native-paper';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -12,6 +12,7 @@ import theme from '../theme';
 export default function PlansScreen({ navigation }: any) {
 	const { setMovies } = useMovies();
 	const { userId } = useUserContext();
+	const [loading, setLoading] = useState(false);
 
 	async function handleMovies() {
 		const data = await getInitialMovies(userId);
@@ -86,6 +87,8 @@ export default function PlansScreen({ navigation }: any) {
 						style={styles.button}
 						labelStyle={styles.buttonLabel}
 						onPress={handleMovies}
+						loading={loading}
+						disabled={loading}
 					>
 						Iniciar
 					</Button>

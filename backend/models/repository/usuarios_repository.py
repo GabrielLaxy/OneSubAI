@@ -44,7 +44,7 @@ class UsuariosRepository:
     
     def select_one(self, filter) -> Dict:
         collection = self.__db_connection.get_collection(self.__collection_name)
-        response = collection.find_one(filter, {"_id": 0})
+        response = collection.find_one(filter, {"senha": 0})
         return response
     
     def select_if_property_exists(self, filter) -> None:

@@ -2,12 +2,15 @@ import os
 import sys
 from fastapi import FastAPI, HTTPException, Request
 import uvicorn
+from pydantic import BaseModel
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from backend.recomendation.main import *
 from backend.state.session_store import registrar_avaliacao, obter_estado, resetar_usuario
 from backend.recomendation.models import Avaliacao, RecomendacaoResponse
-from backend.fake_db import fake_db_init, fake_db_get_movie_by_id, get_random_good_movie, get_description_by_id
 from backend.models.repository.usuarios_repository import UsuariosRepository
+from backend.models.repository.catalogo_repository import CatalogoRepository
+from backend.models.repository.catalogo_overview_repository import CatalogoOverviewRepository
 from backend.models.connection_options.connection import DBConnectionHandler
 
 db_handle = DBConnectionHandler()
@@ -16,18 +19,37 @@ db_connection = db_handle.get_db_connection()
 
 app = FastAPI()
 
-filmes = carregar_filmes("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\catalogo_teste.json")
+usuarios_repo = UsuariosRepository(db_connection)
+catalogo_repo = CatalogoRepository(db_connection)
+
+overview_repo = CatalogoOverviewRepository(db_connection)
+
+catalogo_global = catalogo_repo.select_all()
+
+filmes = carregar_filmes(catalogo_global)
 vetores, ids = gerar_vetores(filmes)
 
-usuarios_repo = UsuariosRepository(db_connection)
+class AvaliarPayload(BaseModel):
+    user_id: str
+    movie_id: int
+    avaliacao: int
+
+class FilmeAleatorioBomPayload(BaseModel):
+    user_id: str
+
+class UserIdPayload(BaseModel):
+    user_id: str
+
+class MovieIdPayload(BaseModel):
+    movie_id: int
 
 @app.post("/avaliar")
-def avaliar_filme(payload: dict):
-    user_id = payload.get("user_id")
-    movie_id = payload.get("movie_id")
-    avaliacao = payload.get("avaliacao")
+def avaliar_filme(payload: AvaliarPayload):
+    user_id = payload.user_id
+    movie_id = payload.movie_id
+    avaliacao = payload.avaliacao
 
-    print(f"✅ {payload.get('movie_id')}")
+    print(f"✅ {movie_id}")
 
     if avaliacao not in [-1, 0, 1]:
         raise HTTPException(status_code=400, detail="Avaliação inválida")
@@ -45,8 +67,8 @@ def avaliar_filme(payload: dict):
 
 
 @app.post("/recomendar_parcial")
-def recomendar_parcial(payload: dict):
-    user_id = payload.get("user_id")
+def recomendar_parcial(payload: UserIdPayload):
+    user_id = payload.user_id
     dados = obter_estado(user_id)
     perfil = construir_perfil_usuario(
         list(dados["likes"]), list(dados["dislikes"]), vetores, ids
@@ -64,7 +86,7 @@ def recomendar_parcial(payload: dict):
     filme = None
     if recomendados and len(recomendados) > 0:
         filme_id = recomendados[0]
-        filme = fake_db_get_movie_by_id(filme_id)
+        filme = catalogo_repo.select_movie_by_id(filme_id)
         
         dados["avaliados"].add(filme_id)
         print(f"⭐ {dados['avaliados']}")  
@@ -75,8 +97,8 @@ def recomendar_parcial(payload: dict):
 
 
 @app.post("/recomendar_final")
-def recomendar_final(payload: dict):
-    user_id = payload.get("user_id")
+def recomendar_final(payload: UserIdPayload):
+    user_id = payload.user_id
     dados = obter_estado(user_id)
     perfil = construir_perfil_usuario(
         list(dados["likes"]), list(dados["dislikes"]), vetores, ids
@@ -93,7 +115,7 @@ def recomendar_final(payload: dict):
     filme = None
     if recomendados and len(recomendados) > 0:
         filme_id = recomendados[0]
-        filme = fake_db_get_movie_by_id(filme_id)
+        filme = catalogo_repo.select_movie_by_id(filme_id)
         dados["avaliados"].add(filme_id)
 
     return {"recomendados": [filme] if filme else []}
@@ -103,7 +125,7 @@ def filmes_iniciais(payload: dict):
     user_id = payload.get("user_id")
     if not user_id:
         raise HTTPException(status_code=400, detail="user_id não fornecido")
-    filmes = fake_db_init()
+    filmes = catalogo_repo.select_random_high_rated_movies() 
     dados = obter_estado(user_id)
     enviados = set(f["id"] for f in filmes)
     dados.setdefault("enviados", set()).update(enviados)
@@ -120,22 +142,22 @@ def filme_por_id(payload: dict):
     if not movie_id:
         raise HTTPException(status_code=400, detail="ID do filme não fornecido")
 
-    filme = fake_db_get_movie_by_id(movie_id)
+    filme = catalogo_repo.select_movie_by_id(movie_id)
     if not filme:
         raise HTTPException(status_code=404, detail="Filme não encontrado")
 
     return {"filme": filme}
 
 @app.post("/filme_aleatorio_bom")
-def filme_aleatorio_bom(payload: dict):
-    user_id = payload.get("user_id")
+def filme_aleatorio_bom(payload: FilmeAleatorioBomPayload):
+    user_id = payload.user_id
     if not user_id:
         raise HTTPException(status_code=400, detail="user_id não fornecido")
     dados = obter_estado(user_id)
     ignorar_ids = set(dados["avaliados"])
     if "enviados" in dados:
         ignorar_ids.update(dados["enviados"])
-    filme = get_random_good_movie(ignorar_ids=ignorar_ids)
+    filme = catalogo_repo.get_random_good_movie(ignorar_ids=ignorar_ids)
     if not filme:
         raise HTTPException(status_code=404, detail="Nenhum filme bom encontrado")
     dados["avaliados"].add(filme["id"])
@@ -143,11 +165,9 @@ def filme_aleatorio_bom(payload: dict):
     return {"filme": filme}
 
 @app.post("/descricao_por_id")
-def descricao_por_id(payload: dict):
-    movie_id = payload.get("movie_id")
-    if not movie_id:
-        raise HTTPException(status_code=400, detail="ID do filme não fornecido")
-    descricao = get_description_by_id(movie_id)
+def descricao_por_id(payload: MovieIdPayload):
+    movie_id = payload.movie_id
+    descricao = overview_repo.get_description_by_id(movie_id)
     return {"descricao": descricao}
 
 @app.post("/register")
@@ -184,7 +204,6 @@ def login(payload: dict):
     if not user:
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
 
-    # Converte o ObjectId para string, se existir
     if "_id" in user:
         user["_id"] = str(user["_id"])
 

@@ -73,7 +73,7 @@ export default function Config({ navigation }: any) {
 					mode="contained"
 					onPress={() => navigation.navigate('Login')}
 				>
-					Press me
+					Sair
 				</Button>
 			</View>
 		</View>
