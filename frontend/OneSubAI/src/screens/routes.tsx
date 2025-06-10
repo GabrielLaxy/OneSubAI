@@ -7,6 +7,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import HeaderOp from '../components/recScreensHeader';
+import FinalHeaderOp from '../components/finalRecHeader';
 
 import styles from '../styles/tabBarStyle';
 
@@ -187,7 +188,11 @@ export default function Routes() {
 					headerShown: true,
 				}}
 			/>
-			<Stack.Screen name="FinalRec" component={FinalRec} options={HeaderOp} />
+			<Stack.Screen
+				name="FinalRec"
+				component={FinalRec}
+				options={({ navigation }) => FinalHeaderOp(navigation as any)}
+			/>
 		</Stack.Navigator>
 	);
 }

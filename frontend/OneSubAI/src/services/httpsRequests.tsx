@@ -1,5 +1,5 @@
 const BASE_URL =
-	'https://6294-2804-14c-bf3a-8061-7420-210a-581f-a59e.ngrok-free.app';
+	'https://e099-2804-14c-bf3a-8061-54-dc04-6d76-dd5a.ngrok-free.app';
 
 export async function postMovieResponse(
 	user_id: string,
@@ -140,6 +140,50 @@ export async function getMovieDescriptionById(movie_id: number) {
 		return data;
 	} catch (error) {
 		console.error('Erro no getMovieDescriptionById:', error);
+		return null;
+	}
+}
+
+export async function loginRequest(email: string, password: string) {
+	try {
+		const res = await fetch(BASE_URL + '/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ email, password }),
+		});
+		if (!res.ok) {
+			throw new Error('Credenciais inválidas');
+		}
+		const data = await res.json();
+		return data; 
+	} catch (error) {
+		console.error('Erro no loginRequest:', error);
+		return null;
+	}
+}
+
+export async function registerRequest(
+	username: string,
+	email: string,
+	password: string
+) {
+	try {
+		const res = await fetch(BASE_URL + '/register', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ username, email, password }),
+		});
+		if (!res.ok) {
+			throw new Error('Erro ao cadastrar usuário');
+		}
+		const data = await res.json();
+		return data; 
+	} catch (error) {
+		console.error('Erro no registerRequest:', error);
 		return null;
 	}
 }

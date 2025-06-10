@@ -27,7 +27,7 @@ export default function RecScreen({ navigation }: any) {
 	const [validRatingsCount, setValidRatingsCount] = useState(0);
 	const [receivedMovieIds, setReceivedMovieIds] = useState<number[]>([]);
 	const { userId } = useUserContext();
-	const { setFinalMovie } = useFinalMovie(); // use o contexto aqui
+	const { setFinalMovie } = useFinalMovie();
 	const { width, height } = Dimensions.get('window');
 
 	const posterRefs = useRef<
@@ -45,7 +45,7 @@ export default function RecScreen({ navigation }: any) {
 								setValidRatingsCount(prev => {
 									const newCount = prev + 1;
 									setReceivedMovieIds(prevIds => [...prevIds, movieId]);
-									if (newCount >= 2) {
+									if (newCount % 2 === 0) {
 										getPartialRecommendation(userId)
 											.then(partial => {
 												if (partial && partial.recomendados) {
@@ -134,7 +134,7 @@ export default function RecScreen({ navigation }: any) {
 						providers: Array.isArray(movie.providers) ? movie.providers : [],
 						overview,
 					};
-					setFinalMovie(movieWithDesc); // agora salva no contexto
+					setFinalMovie(movieWithDesc);
 					navigation.navigate('FinalRec');
 				}
 			};

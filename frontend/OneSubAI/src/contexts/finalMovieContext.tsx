@@ -21,10 +21,6 @@ const FinalMovieContext = createContext<FinalMovieContextType | undefined>(
 export const FinalMovieProvider = ({ children }: { children: ReactNode }) => {
 	const [finalMovie, setFinalMovie] = useState<FinalMovie | null>(null);
 
-	React.useEffect(() => {
-		console.log('finalMovie salvo no contexto:', finalMovie);
-	}, [finalMovie]);
-
 	return (
 		<FinalMovieContext.Provider value={{ finalMovie, setFinalMovie }}>
 			{children}

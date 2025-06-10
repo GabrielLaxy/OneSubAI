@@ -3,12 +3,12 @@ import random
 
 def fake_db_init():
     """
-    Recebe uma lista de filmes do arquivo e retorna 8 filmes aleatórios com tmdb_rating > 8.
+    Recebe uma lista de filmes do arquivo e retorna 8 filmes aleatórios com tmdb_rating > 8 e vote_count>15000.
     """
     with open("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\catalogo_teste.json", 'r', encoding='utf-8') as f:
         json_data = json.load(f)
-    high_rated_movies = [movie for movie in json_data if movie.get("tmdb_rating", 0) > 8 and movie.get("vote_count", 0) > 10000]
-    return random.sample(high_rated_movies, min(8, len(high_rated_movies)))
+    high_rated_movies = [movie for movie in json_data if movie.get("tmdb_rating", 0) > 5.5 and movie.get("vote_count", 0) > 8000]
+    return random.sample(high_rated_movies, min(10, len(high_rated_movies)))
 
 def fake_db_get_movie_by_id(movie_id):
     """
@@ -23,7 +23,7 @@ def fake_db_get_movie_by_id(movie_id):
 
 def get_random_good_movie(ignorar_ids=None):
     """
-    Retorna um filme aleatório com tmdb_rating > 8 que não está em ignorar_ids.
+    Retorna um filme aleatório com tmdb_rating > 8 e vote_count > 15000 que não está em ignorar_ids.
     """
     if ignorar_ids is None:
         ignorar_ids = set()
@@ -31,9 +31,9 @@ def get_random_good_movie(ignorar_ids=None):
         json_data = json.load(f)
     high_rated_movies = [
         movie for movie in json_data
-        if movie.get("tmdb_rating", 0) > 8
-        and movie.get("vote_count", 0) > 15000
-        and movie.get("id") not in ignorar_ids  # <-- filtro para não repetir
+        if movie.get("tmdb_rating", 0) > 5.5
+        and movie.get("vote_count", 0) > 8000
+        and movie.get("id") not in ignorar_ids
     ]
     return random.choice(high_rated_movies) if high_rated_movies else None
 

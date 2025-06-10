@@ -5,6 +5,8 @@ type UserContextType = {
 	setNumbers: React.Dispatch<React.SetStateAction<number[]>>;
 	userId: string;
 	setUserId: React.Dispatch<React.SetStateAction<string>>;
+	user: any; // novo campo
+	setUser: React.Dispatch<React.SetStateAction<any>>; // novo campo
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -12,6 +14,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: ReactNode }) => {
 	const [numbers, setNumbers] = useState<number[]>([]);
 	const [userId, setUserId] = useState<string>('');
+	const [user, setUser] = useState<any>(null); // novo estado
 
 	useEffect(() => {
 		const generateHash = () => {
@@ -24,7 +27,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 	}, []);
 
 	return (
-		<UserContext.Provider value={{ numbers, setNumbers, userId, setUserId }}>
+		<UserContext.Provider value={{ numbers, setNumbers, userId, setUserId, user, setUser }}>
 			{children}
 		</UserContext.Provider>
 	);

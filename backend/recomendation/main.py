@@ -35,7 +35,7 @@ def carregar_filmes(path_to_json):
     with open(path_to_json, encoding='utf-8') as f:
         return json.load(f)
 
-def gerar_vetores(filmes, peso_generos=2.0, peso_providers=0.0, peso_texto=1.8):
+def gerar_vetores(filmes, peso_generos=2.0, peso_providers=0.0, peso_texto=1.5):
     textos = [
         " ".join(f.get("keywords", []) + f.get("directors", []) + f.get("actors", []))
         for f in filmes

@@ -1,17 +1,25 @@
 import os
 import sys
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 import uvicorn
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from backend.recomendation.main import *
 from backend.state.session_store import registrar_avaliacao, obter_estado, resetar_usuario
 from backend.recomendation.models import Avaliacao, RecomendacaoResponse
 from backend.fake_db import fake_db_init, fake_db_get_movie_by_id, get_random_good_movie, get_description_by_id
+from backend.models.repository.usuarios_repository import UsuariosRepository
+from backend.models.connection_options.connection import DBConnectionHandler
+
+db_handle = DBConnectionHandler()
+db_handle.connect_to_db()
+db_connection = db_handle.get_db_connection()
 
 app = FastAPI()
 
 filmes = carregar_filmes("C:\\Users\\Gabriel\\Documents\\OneSubAI\\backend\\local-db\\catalogo_teste.json")
 vetores, ids = gerar_vetores(filmes)
+
+usuarios_repo = UsuariosRepository(db_connection)
 
 @app.post("/avaliar")
 def avaliar_filme(payload: dict):
@@ -44,10 +52,6 @@ def recomendar_parcial(payload: dict):
         list(dados["likes"]), list(dados["dislikes"]), vetores, ids
     )
 
-    print("Perfil:", perfil)
-    print("Likes:", dados["likes"])
-    print("Dislikes:", dados["dislikes"])
-
     recomendados = recomendar(
         perfil,
         vetores,
@@ -77,10 +81,6 @@ def recomendar_final(payload: dict):
     perfil = construir_perfil_usuario(
         list(dados["likes"]), list(dados["dislikes"]), vetores, ids
     )
-
-    print("Perfil final:", perfil)
-    print("Likes final:", dados["likes"])
-    print("Dislikes final:", dados["dislikes"])
 
     recomendados = recomendar(
         perfil,
@@ -150,6 +150,49 @@ def descricao_por_id(payload: dict):
     descricao = get_description_by_id(movie_id)
     return {"descricao": descricao}
 
+@app.post("/register")
+def register(payload: dict):
+    username = payload.get("username")
+    email = payload.get("email")
+    password = payload.get("password")
+
+    if not username or not email or not password:
+        raise HTTPException(status_code=400, detail="Dados de cadastro incompletos")
+
+    try:
+        user_data = {
+            "nome": username,
+            "email": email,
+            "senha": password
+        }
+        user = usuarios_repo.insert_user(user_data)
+        return {"message": "Usuário cadastrado com sucesso", "user": {"nome": user["nome"], "email": user["email"]}}
+    except ValueError as ve:
+        raise HTTPException(status_code=409, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Erro ao cadastrar usuário")
+
+@app.post("/login")
+def login(payload: dict):
+    email = payload.get("email")
+    password = payload.get("password")
+
+    if not email or not password:
+        raise HTTPException(status_code=400, detail="Email e senha são obrigatórios")
+
+    user = usuarios_repo.select_one({"email": email, "senha": password})
+    if not user:
+        raise HTTPException(status_code=401, detail="Credenciais inválidas")
+
+    # Converte o ObjectId para string, se existir
+    if "_id" in user:
+        user["_id"] = str(user["_id"])
+
+    return {
+        "success": True,
+        "message": "Login realizado com sucesso",
+        "user": user
+    }
 
 if __name__ == "__main__":
     uvicorn.run("endpoints2:app", reload=True, port=8080)
