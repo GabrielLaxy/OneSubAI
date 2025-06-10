@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, Dimensions } from 'react-native';
+import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { IconButton, TouchableRipple } from 'react-native-paper';
 import {
@@ -19,6 +19,10 @@ import { useMovies } from '../contexts/moviesContext';
 import { useUserContext } from '../contexts/userContext';
 import { useFinalMovie } from '../contexts/finalMovieContext';
 import styles from '../styles/recScreenStyle';
+import theme from '../theme';
+import LottieView from 'lottie-react-native';
+
+const loadingAnimation = require('../../assets/camera-loading.json');
 
 export default function RecScreen({ navigation }: any) {
 	const { movies, setMovies } = useMovies();
@@ -29,6 +33,7 @@ export default function RecScreen({ navigation }: any) {
 	const { userId } = useUserContext();
 	const { setFinalMovie } = useFinalMovie();
 	const { width, height } = Dimensions.get('window');
+	const [loading, setLoading] = useState(false); 
 
 	const posterRefs = useRef<
 		(null | { like: () => void; dislike: () => void; skip: () => void })[]
@@ -120,6 +125,7 @@ export default function RecScreen({ navigation }: any) {
 	useEffect(() => {
 		if (receivedMovieIds.length === 20) {
 			const getAnotherMovie = async () => {
+				setLoading(true); 
 				const result = await getFinalRecommendation(userId);
 				if (result && result.recomendados && result.recomendados.length > 0) {
 					const movie = result.recomendados[0];
@@ -135,7 +141,10 @@ export default function RecScreen({ navigation }: any) {
 						overview,
 					};
 					setFinalMovie(movieWithDesc);
+					setLoading(false);
 					navigation.navigate('FinalRec');
+				} else {
+					setLoading(false); 
 				}
 			};
 			getAnotherMovie();
@@ -145,6 +154,30 @@ export default function RecScreen({ navigation }: any) {
 	useEffect(() => {
 		console.log('receivedMovieIds atualizados:', receivedMovieIds);
 	}, [receivedMovieIds]);
+
+	if (loading) {
+		return (
+			<View
+				style={{
+					...StyleSheet.absoluteFillObject,
+					justifyContent: 'center',
+					alignItems: 'center',
+					backgroundColor: theme.colors.primary,
+					zIndex: 10,
+				}}
+			>
+				<LottieView
+					source={loadingAnimation}
+					autoPlay
+					loop
+					style={{ width: 200, height: 200 }}
+				/>
+				<Text style={{ color: 'white', marginTop: 20, fontFamily: 'Poppins-SemiBold', fontSize: 20 }}>
+					Encontrando o filme perfeito...
+				</Text>
+			</View>
+		);
+	}
 
 	return (
 		<View style={styles.container}>
