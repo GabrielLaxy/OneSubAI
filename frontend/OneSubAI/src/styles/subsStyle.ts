@@ -87,12 +87,15 @@ const styles = StyleSheet.create({
 	streaming: {
 		fontFamily: 'Poppins-SemiBold',
 		fontSize: 17,
+		padding: 0,
 	},
 
 	plan: {
 		color: theme.colors.labels,
-		fontFamily: 'Poppins-Light',
+		fontFamily: 'Poppins-Medium',
 		fontSize: 11,
+		lineHeight: 12,
+		marginTop: -12,
 	},
 
 	priceContainer: {
@@ -103,6 +106,55 @@ const styles = StyleSheet.create({
 	price: {
 		fontFamily: 'Poppins-Medium',
 		fontSize: 17,
+	},
+
+	dialog: {
+		backgroundColor: theme.colors.accent,
+	},
+
+	dialogTitle: {
+		color: theme.colors.text,
+		fontFamily: 'Poppins-SemiBold',
+	},
+
+	dialogParagraph: {
+		color: theme.colors.text,
+		fontFamily: 'Poppins-regular',
+	},
+
+	cancelButton: {
+		color: theme.colors.primary,
+		fontFamily: 'Poppins-Medium',
+	},
+
+	deleteButton: {
+		color: theme.colors.primary,
+		fontFamily: 'Poppins-Medium',
+	},
+
+	listTile: {
+		backgroundColor: theme.colors.accent,
+	},
+
+	confirmButton: {
+		backgroundColor: theme.colors.primary,
+		padding: 10,
+		borderRadius: 20,
+		width: '100%',
+		alignItems: 'center',
+	},
+
+	signatureDateParagraph: {
+		fontFamily: 'Poppins-Regular',
+		fontSize: 13,
+		width: '80%',
+		marginBottom: 17,
+		textAlign: 'center',
+	},
+
+	signatureDateTitle: {
+		fontFamily: 'Poppins-SemiBold',
+		fontSize: 20,
 	},
 });
 

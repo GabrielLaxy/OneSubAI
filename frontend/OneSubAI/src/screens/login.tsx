@@ -72,7 +72,7 @@ export default function Login({ navigation }: any) {
 								Entre já para gerenciar suas assinaturas
 							</Text>
 						</View>
-						<View>
+						<View style={{gap:10}}>
 							<TextInput
 								theme={theme}
 								mode="outlined"
@@ -82,9 +82,11 @@ export default function Login({ navigation }: any) {
 								autoCapitalize="none"
 								keyboardType="email-address"
 							/>
-							<HelperText type="error" visible={hasEmailErrors()}>
-								Email inválido!
-							</HelperText>
+							{hasEmailErrors() && (
+								<HelperText type="error" visible={true}>
+									Email inválido!
+								</HelperText>
+							)}
 
 							<TextInput
 								theme={theme}

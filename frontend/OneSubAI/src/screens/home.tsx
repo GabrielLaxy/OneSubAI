@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import {
 	Animated,
 	Easing,
@@ -106,6 +107,9 @@ export default function Home() {
 			}, 0);
 		});
 	};
+
+	// Navegação
+	const navigation = useNavigation();
 
 	// Dados e labels
 	const gastosUltimos5Meses = calcularGastosUltimos5Meses(planos);
@@ -245,9 +249,17 @@ export default function Home() {
 				image: require('../../assets/providers-logo/max-logo-hd.png'),
 				name: 'Max',
 			},
+			'4': {
+				image: require('../../assets/providers-logo/disney-plus-logo-hd.png'),
+				name: 'Disney Plus',
+			},
+			'5': {
+				image: require('../../assets/providers-logo/globoplay-logo-hd.png'),
+				name: 'Globo Play',
+			},
 			default: {
-				image: require('../../assets/providers-logo/max-logo-hd.png'),
-				name: 'Outro',
+				image: require('../../assets/providers-logo/globoplay-logo-hd.png'),
+				name: 'Globo Play',
 			},
 		};
 		return providers[firstChar as keyof typeof providers] || providers.default;
@@ -421,7 +433,10 @@ export default function Home() {
 														{ color: theme.colors.primary },
 													]}
 												>
-													R$ {currentData[selectedBarIndex]}
+													R${' '}
+													{currentData[selectedBarIndex]
+														.toFixed(1)
+														.replace('.', ',')}
 												</Text>
 											</Animated.View>
 										)}
