@@ -261,42 +261,6 @@ export default function Home() {
 		}
 	}, [selectedBarIndex, currentData]);
 
-	const subs = [
-		{
-			id: 1,
-			image: require('../../assets/providers-logo/netflix-logo-hd.png'),
-			streaming: 'Netflix',
-			dataExpiracao: new Date('2025-06-06'),
-			preco: 'R$ 54,90',
-		},
-		{
-			id: 2,
-			image: require('../../assets/providers-logo/prime-video-logo-hd.png'),
-			streaming: 'Prime Video',
-			dataExpiracao: new Date('2025-06-30'),
-			preco: 'R$ 36,90',
-		},
-		{
-			id: 3,
-			image: require('../../assets/providers-logo/max-logo-hd.png'),
-			streaming: 'Max',
-			dataExpiracao: new Date('2025-06-30'),
-			preco: 'R$ 36,90',
-		},
-	];
-
-	const legendaY = gerarLegendaY(maxGasto);
-
-	function calcularDataExpiracao(
-		dataAssinada: string | Date,
-		vencimento: number
-	): Date {
-		const data = new Date(dataAssinada);
-		data.setDate(data.getDate() + vencimento); // adiciona os dias de vencimento
-		return data;
-	}
-	  
-
 	function diasRestantes(dataFutura: Date | null): string {
 		if (!dataFutura) return 'Data inválida';
 
@@ -308,12 +272,6 @@ export default function Home() {
 
 		return `Restam ${diffDias} dias`;
 	}
-	  
-	  
-	  
-	  
-	  
-	  
 
 	function getPercentageChange(currentIndex: number) {
 		if (currentIndex === 0) return null; // sem anterior, não tem variação
@@ -375,15 +333,6 @@ export default function Home() {
 		// Criando data no formato ISO (YYYY-MM-DD) que o JS entende bem:
 		return new Date(`${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`);
 	}
-	  
-	  
-
-	function vencimentoParaDias(vencimento: 'Mensal' | 'Anual'): number {
-		if (vencimento === 'Mensal') return 30; // ou 31, dependendo da regra
-		if (vencimento === 'Anual') return 365;
-		return 0; // default, caso queira tratar outros casos
-	}
-	  
 
 	function calcularProximoVencimento(
 		dataAssinada: string,
@@ -408,8 +357,6 @@ export default function Home() {
 
 		return proximoVencimento;
 	}
-	  
-	  
 
 	return (
 		<View style={{ flex: 1, backgroundColor: theme.colors.primary }}>
@@ -665,7 +612,7 @@ export default function Home() {
 						<View style={styles.subscribesTexts}>
 							<Text style={styles.subscribesTitle}>Your Subscribes &gt;</Text>
 							<Text style={styles.subscribesParagraph}>
-								You have {subs.length} subscriptions
+								You have {user.planos.length} subscriptions
 							</Text>
 						</View>
 						<ScrollView
@@ -674,8 +621,6 @@ export default function Home() {
 						>
 							<View style={styles.subs}>
 								{user?.planos?.map((plano: Plano) => {
-									console.log('dataAssinada:', plano.dataAssinada);
-									console.log('tipo dataAssinada:', typeof plano.dataAssinada);
 									const streamingInfo = getStreamingInfoById(plano.id);
 
 									return (
