@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
 	},
 
 	streamingImage: {
-		height: 55,
-		width: 55,
+		height: 60,
+		width: 60,
 	},
 
 	streaming: {
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
 
 	plan: {
 		color: theme.colors.labels,
-		fontFamily: 'Poppins-Regular',
+		fontFamily: 'Poppins-Light',
 		fontSize: 11,
 	},
 

@@ -69,7 +69,6 @@ class UsuariosRepository:
             filter,
             { "$set": updates }
         )
-        print(result.modified_count)
 
 # editar varios registros de conta de usuario
     # def edit_many_increment(self, filter, num) -> None:

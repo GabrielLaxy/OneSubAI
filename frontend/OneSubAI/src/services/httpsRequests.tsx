@@ -157,7 +157,7 @@ export async function loginRequest(email: string, password: string) {
 			throw new Error('Credenciais inválidas');
 		}
 		const data = await res.json();
-		return data; 
+		return data;
 	} catch (error) {
 		console.error('Erro no loginRequest:', error);
 		return null;
@@ -181,9 +181,46 @@ export async function registerRequest(
 			throw new Error('Erro ao cadastrar usuário');
 		}
 		const data = await res.json();
-		return data; 
+		return data;
 	} catch (error) {
 		console.error('Erro no registerRequest:', error);
+		return null;
+	}
+}
+
+export async function getStreamingProviders() {
+	try {
+		const res = await fetch(BASE_URL + '/planos', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		if (!res.ok) {
+			throw new Error('Erro ao buscar provedores de streaming');
+		}
+		return await res.json();
+	} catch (error) {
+		console.error('Erro no getStreamingProviders:', error);
+		return null;
+	}
+}
+
+export async function updateUserPlanos(email: string, planos: any[]) {
+	try {
+		const res = await fetch(BASE_URL + '/update_planos', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ email, planos }),
+		});
+		if (!res.ok) {
+			throw new Error('Erro ao atualizar planos');
+		}
+		return await res.json();
+	} catch (error) {
+		console.error('Erro no updateUserPlanos:', error);
 		return null;
 	}
 }

@@ -5,6 +5,9 @@ class PlanosRepository:
         self.__collection_name = "planos"
         self.__db_connection = db_connection
 
+    def get_collection(self):
+        return self.__db_connection[self.__collection_name]
+
     def insert_document(self, document: Dict) -> Dict:
         collection = self.get_collection()
         result = collection.insert_one(document)
@@ -17,10 +20,6 @@ class PlanosRepository:
         for doc, _id in zip(list_of_documents, result.inserted_ids):
             doc["_id"] = _id
         return list_of_documents
-
-    def select_one(self, filter: Dict) -> Union[Dict, None]:
-        collection = self.get_collection()
-        return collection.find_one(filter, {"_id": 0})
 
     def select_many(self, filter: Dict, projection: Dict = None) -> List[Dict]:
         collection = self.get_collection()
@@ -41,3 +40,8 @@ class PlanosRepository:
         collection = self.get_collection()
         result = collection.delete_one(filter)
         return result.deleted_count
+
+    def select_all(self) -> List[Dict]:
+        collection = self.get_collection()
+        data = collection.find({}, {"_id": 0})
+        return list(data)

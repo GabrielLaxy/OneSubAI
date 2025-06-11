@@ -3,6 +3,7 @@ import sys
 from fastapi import FastAPI, HTTPException, Request
 import uvicorn
 from pydantic import BaseModel
+from typing import List, Dict
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from backend.recomendation.main import *
@@ -11,7 +12,9 @@ from backend.recomendation.models import Avaliacao, RecomendacaoResponse
 from backend.models.repository.usuarios_repository import UsuariosRepository
 from backend.models.repository.catalogo_repository import CatalogoRepository
 from backend.models.repository.catalogo_overview_repository import CatalogoOverviewRepository
+from backend.models.repository.planos_repository import PlanosRepository
 from backend.models.connection_options.connection import DBConnectionHandler
+
 
 db_handle = DBConnectionHandler()
 db_handle.connect_to_db()
@@ -21,6 +24,7 @@ app = FastAPI()
 
 usuarios_repo = UsuariosRepository(db_connection)
 catalogo_repo = CatalogoRepository(db_connection)
+planos_repo = PlanosRepository(db_connection)
 
 overview_repo = CatalogoOverviewRepository(db_connection)
 
@@ -42,6 +46,10 @@ class UserIdPayload(BaseModel):
 
 class MovieIdPayload(BaseModel):
     movie_id: int
+
+class UpdatePlanosPayload(BaseModel):
+    email: str
+    planos: List[Dict]
 
 @app.post("/avaliar")
 def avaliar_filme(payload: AvaliarPayload):
@@ -212,6 +220,26 @@ def login(payload: dict):
         "message": "Login realizado com sucesso",
         "user": user
     }
+
+@app.get("/planos")
+def get_planos():
+    planos = planos_repo.select_all()
+    return planos
+
+@app.post("/update_planos")
+def update_planos(payload: UpdatePlanosPayload):
+    email = payload.email
+    planos = payload.planos
+
+    if not email or planos is None:
+        raise HTTPException(status_code=400, detail="Email e planos são obrigatórios")
+
+    try:
+        usuarios_repo.edit_registry({"email": email}, {"planos": planos})
+        return {"success": True, "message": "Planos atualizados com sucesso"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao atualizar planos: {e}")
+
 
 if __name__ == "__main__":
     uvicorn.run("endpoints2:app", reload=True, port=8080)

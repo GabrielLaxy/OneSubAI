@@ -26,6 +26,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 		setUserId(generateHash());
 	}, []);
 
+	useEffect(() => {
+		console.log('user atualizado:', user);
+	}, [user]);
+
 	return (
 		<UserContext.Provider value={{ numbers, setNumbers, userId, setUserId, user, setUser }}>
 			{children}
