@@ -16,7 +16,7 @@ import { loginRequest } from '../services/httpsRequests';
 import { useUserContext } from '../contexts/userContext'; 
 
 const text_logo = require('../../assets/text_logo.png');
-const flat_image = require('../../assets/flat-design1.png');
+const flat_image = require('../../assets/login.png');
 
 export default function Login({ navigation }: any) {
 	const [email, setEmail] = useState('');
@@ -60,7 +60,7 @@ export default function Login({ navigation }: any) {
 						<View style={styles.headerContent}>
 							<Image source={text_logo} style={styles.logo} />
 							<View>
-								<Image source={flat_image} />
+								<Image style={styles.flatImage} source={flat_image} />
 							</View>
 						</View>
 					</View>

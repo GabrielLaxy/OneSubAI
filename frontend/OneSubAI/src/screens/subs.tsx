@@ -27,34 +27,43 @@ import {
 import styles from '../styles/subsStyle';
 import theme from '../theme';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const logoNetFlix = require('../../assets/providers-logo/netflix-logo-hd.png');
-const logoPrimeVideo = require('../../assets/providers-logo/prime-video-logo-hd.png');
-const logoDisneyPlus = require('../../assets/providers-logo/disney-plus-logo-hd.png');
-const logoMax = require('../../assets/providers-logo/max-logo-hd.png');
-const logoGloboPlay = require('../../assets/providers-logo/globoplay-logo-hd.png');
+type Plan = {
+	id: number;
+	name: string;
+	preço: number;
+	vencimento: string;
+	dataAssinada: string;
+};
 
-// Mapeamento dos nomes para os logos
+type Streaming = {
+	id: number;
+	name: string;
+	planos: Plan[];
+};
+
 const streamingLogos: Record<string, any> = {
-	Netflix: logoNetFlix,
-	'Prime Video': logoPrimeVideo,
-	'Disney+': logoDisneyPlus,
-	Max: logoMax,
-	Globoplay: logoGloboPlay,
+	Netflix: require('../../assets/providers-logo/netflix-logo-hd.png'),
+	'Prime Video': require('../../assets/providers-logo/prime-video-logo-hd.png'),
+	'Disney+': require('../../assets/providers-logo/disney-plus-logo-hd.png'),
+	Max: require('../../assets/providers-logo/max-logo-hd.png'),
+	Globoplay: require('../../assets/providers-logo/globoplay-logo-hd.png'),
 };
 
 export default function Subs() {
 	const [modalVisible, setModalVisible] = useState(false);
-	const [streamings, setStreamings] = useState<any[]>([]);
+	const [streamings, setStreamings] = useState<Streaming[]>([]);
 	const [dateModalVisible, setDateModalVisible] = useState(false);
-	const [selectedPlan, setSelectedPlan] = useState<any>(null);
+	const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 	const [dateInput, setDateInput] = useState('');
 	const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
-	const [planToDelete, setPlanToDelete] = useState<any>(null);
-	const { user, setUser } = useUserContext();
+	const [planToDelete, setPlanToDelete] = useState<Plan | null>(null);
 	const [searchText, setSearchText] = useState('');
+	const { user, setUser } = useUserContext();
+	const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+	// Efeitos
 	React.useEffect(() => {
 		if (modalVisible) {
 			getStreamingProviders().then(data => {
@@ -67,28 +76,23 @@ export default function Subs() {
 		}
 	}, [modalVisible]);
 
-	const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
+	// Handlers
 	const handleDateChange = (text: string) => {
-		// Remove tudo que não seja número
 		const cleaned = text.replace(/\D/g, '');
+		let formatted = cleaned;
 
-		let formatted = '';
-		if (cleaned.length <= 2) {
-			formatted = cleaned;
-		} else if (cleaned.length <= 4) {
+		if (cleaned.length > 2)
 			formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
-		} else {
+		if (cleaned.length > 4)
 			formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(
 				2,
 				4
 			)}/${cleaned.slice(4, 8)}`;
-		}
 
 		setDateInput(formatted);
 	};
 
-	const handleSelectPlan = (plan: any) => {
+	const handleSelectPlan = (plan: Plan) => {
 		setSelectedPlan(plan);
 		setDateInput('');
 		setDateModalVisible(true);
@@ -97,25 +101,15 @@ export default function Subs() {
 	const handleConfirmDate = async () => {
 		if (!selectedPlan || dateInput.length !== 10) return;
 
-		// Monta o novo plano no formato esperado
 		const novoPlano = {
-			id: selectedPlan.id,
-			name: selectedPlan.name,
-			preço: selectedPlan.preço,
-			vencimento: selectedPlan.vencimento,
+			...selectedPlan,
 			dataAssinada: dateInput,
 		};
 
 		setUser((prevUser: any) => {
-			const novosPlanos = prevUser.planos
-				? [...prevUser.planos, novoPlano]
-				: [novoPlano];
-			// Chama o request para atualizar no backend
+			const novosPlanos = [...(prevUser.planos || []), novoPlano];
 			updateUserPlanos(prevUser.email, novosPlanos);
-			return {
-				...prevUser,
-				planos: novosPlanos,
-			};
+			return { ...prevUser, planos: novosPlanos };
 		});
 
 		setDateModalVisible(false);
@@ -128,39 +122,84 @@ export default function Subs() {
 		if (!planToDelete) return;
 
 		setUser((prevUser: any) => {
-			const novosPlanos = prevUser.planos
-				? prevUser.planos.filter((p: any) => p.id !== planToDelete.id)
-				: [];
-			// Chama o request para atualizar no backend
+			const novosPlanos =
+				prevUser.planos?.filter((p: Plan) => p.id !== planToDelete.id) || [];
 			updateUserPlanos(prevUser.email, novosPlanos);
-			return {
-				...prevUser,
-				planos: novosPlanos,
-			};
+			return { ...prevUser, planos: novosPlanos };
 		});
 
 		setDeleteDialogVisible(false);
 		setPlanToDelete(null);
 	};
 
-	// Função utilitária para pegar o nome do streaming pelo id do plano
+	// Utilitários
 	const getStreamingNameByPlanId = (planId: number) => {
-		const firstDigit = planId.toString()[0];
-		switch (firstDigit) {
-			case '1':
-				return 'Netflix';
-			case '2':
-				return 'Prime Video';
-			case '3':
-				return 'Max';
-			case '4':
-				return 'Disney+';
-			case '5':
-				return 'Globoplay';
-			default:
-				return 'Desconhecido';
-		}
+		const providers: { [key: string]: string } = {
+			'1': 'Netflix',
+			'2': 'Prime Video',
+			'3': 'Max',
+			'4': 'Disney+',
+			'5': 'Globoplay',
+			default: 'Desconhecido',
+		};
+
+		return providers[planId.toString()[0]] || providers.default;
 	};
+
+	const formatPrice = (price: number) =>
+		`R$ ${price.toFixed(2).replace('.', ',')}`;
+
+	// Componentes reutilizáveis
+	const CloseButton = ({ onPress }: { onPress: () => void }) => (
+		<TouchableOpacity
+			onPress={onPress}
+			style={{
+				position: 'absolute',
+				top: 20,
+				left: 10,
+				zIndex: 10,
+				padding: 5,
+			}}
+		>
+			<FontAwesomeIcon icon={faTimes} size={20} color={theme.colors.text} />
+		</TouchableOpacity>
+	);
+
+	const PlanItem = ({
+		plan,
+		streamingName,
+	}: {
+		plan: Plan;
+		streamingName: string;
+	}) => (
+		<TouchableOpacity
+			style={styles.plansContainer}
+			activeOpacity={0.7}
+			onPress={() => {
+				setPlanToDelete(plan);
+				setDeleteDialogVisible(true);
+			}}
+		>
+			<View style={styles.streamingImageContainer}>
+				<Image
+					source={streamingLogos[streamingName]}
+					style={styles.streamingImage}
+				/>
+			</View>
+			<View style={styles.streamingPlans}>
+				<Text style={styles.streaming}>{streamingName}</Text>
+				<Text style={styles.plan}>{plan.name}</Text>
+				<Text
+					style={{ color: '#888', fontSize: 9, fontFamily: 'Poppins-Light' }}
+				>
+					Assinada em: {plan.dataAssinada}
+				</Text>
+			</View>
+			<View style={styles.priceContainer}>
+				<Text style={styles.price}>{formatPrice(plan.preço)}</Text>
+			</View>
+		</TouchableOpacity>
+	);
 
 	return (
 		<PaperProvider>
@@ -178,26 +217,10 @@ export default function Subs() {
 							padding: 20,
 							width: width * 0.9,
 							alignSelf: 'center',
-							position: 'relative', // importante para posicionar o botão
+							position: 'relative',
 						}}
 					>
-						{/* Botão fechar no canto superior direito */}
-						<TouchableOpacity
-							onPress={() => setModalVisible(false)}
-							style={{
-								position: 'absolute',
-								top: 20,
-								left: 10,
-								zIndex: 10,
-								padding: 5,
-							}}
-						>
-							<FontAwesomeIcon
-								icon={faTimes}
-								size={20}
-								color={theme.colors.text}
-							/>
-						</TouchableOpacity>
+						<CloseButton onPress={() => setModalVisible(false)} />
 						<Text
 							style={{
 								fontFamily: 'Poppins-SemiBold',
@@ -209,7 +232,7 @@ export default function Subs() {
 							Adicionar assinatura
 						</Text>
 						<ScrollView style={{ maxHeight: 400 }}>
-							{streamings.map((streaming: any) => (
+							{streamings.map(streaming => (
 								<List.Accordion
 									style={styles.listTile}
 									key={streaming.id}
@@ -233,12 +256,12 @@ export default function Subs() {
 								>
 									{streaming.planos
 										.filter(
-											(plano: any) =>
+											plano =>
 												!user?.planos?.some(
-													(userPlan: any) => userPlan.id === plano.id
+													(userPlan: Plan) => userPlan.id === plano.id
 												)
 										)
-										.map((plano: any) => (
+										.map(plano => (
 											<List.Item
 												key={plano.id}
 												title={plano.name}
@@ -247,9 +270,9 @@ export default function Subs() {
 													fontFamily: 'Poppins-Medium',
 													fontSize: 15,
 												}}
-												description={`R$ ${Number(plano.preço)
-													.toFixed(2)
-													.replace('.', ',')} - ${plano.vencimento}`}
+												description={`${formatPrice(plano.preço)} - ${
+													plano.vencimento
+												}`}
 												descriptionStyle={{
 													color: theme.colors.labels,
 													fontFamily: 'Poppins-Light',
@@ -258,15 +281,7 @@ export default function Subs() {
 												left={props => (
 													<List.Icon {...props} icon="playlist-play" />
 												)}
-												onPress={() => {
-													setModalVisible(false);
-													setSelectedPlan({
-														...plano,
-														streaming: streaming.name,
-													});
-													setDateInput('');
-													setDateModalVisible(true);
-												}}
+												onPress={() => handleSelectPlan(plano)}
 											/>
 										))}
 								</List.Accordion>
@@ -274,7 +289,7 @@ export default function Subs() {
 						</ScrollView>
 					</Modal>
 
-					{/* Modal para inserir data manualmente */}
+					{/* Modal para inserir data */}
 					<Modal
 						visible={dateModalVisible}
 						onDismiss={() => setDateModalVisible(false)}
@@ -288,22 +303,7 @@ export default function Subs() {
 							alignItems: 'center',
 						}}
 					>
-						<TouchableOpacity
-							onPress={() => setDateModalVisible(false)}
-							style={{
-								position: 'absolute',
-								top: 20,
-								left: 10,
-								zIndex: 10,
-								padding: 5,
-							}}
-						>
-							<FontAwesomeIcon
-								icon={faTimes}
-								size={20}
-								color={theme.colors.text}
-							/>
-						</TouchableOpacity>
+						<CloseButton onPress={() => setDateModalVisible(false)} />
 						<Text style={styles.signatureDateTitle}>Data de Assinatura</Text>
 						<Text style={styles.signatureDateParagraph}>
 							Nos informe em que data foi feita a realização desta assinatura
@@ -354,7 +354,7 @@ export default function Subs() {
 						<Dialog.Content>
 							<Text style={styles.dialogParagraph}>
 								Deseja realmente excluir a assinatura de{' '}
-								{planToDelete ? planToDelete.name : ''}?
+								{planToDelete?.name || ''}?
 							</Text>
 						</Dialog.Content>
 						<Dialog.Actions>
@@ -379,6 +379,7 @@ export default function Subs() {
 						</Dialog.Actions>
 					</Dialog>
 				</Portal>
+
 				<ScrollView>
 					<View style={styles.secondLayer}>
 						<Text style={styles.descriptionPage}>
@@ -413,75 +414,50 @@ export default function Subs() {
 								/>
 							</TouchableOpacity>
 						</View>
-						<ScrollView>
-							<View>
-								{user?.planos?.length > 0 ? (
-									user.planos
-										.filter(
-											(sub: any) =>
-												sub.name
-													.toLowerCase()
-													.includes(searchText.toLowerCase()) ||
-												getStreamingNameByPlanId(sub.id)
-													.toLowerCase()
-													.includes(searchText.toLowerCase())
-										)
-										.map((sub: any, idx: number) => {
-											const streamingName = getStreamingNameByPlanId(sub.id);
-											return (
-												<TouchableOpacity
+						<View style={{ flex: 1 }}>
+							<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+								<View>
+									{user?.planos?.length > 0 ? (
+										user.planos
+											.filter((sub: Plan) => {
+												const searchLower = searchText.toLowerCase();
+												return (
+													sub.name.toLowerCase().includes(searchLower) ||
+													getStreamingNameByPlanId(sub.id)
+														.toLowerCase()
+														.includes(searchLower)
+												);
+											})
+											.map((sub: Plan, idx: number) => (
+												<PlanItem
 													key={idx}
-													style={styles.plansContainer}
-													activeOpacity={0.7}
-													onPress={() => {
-														setPlanToDelete(sub);
-														setDeleteDialogVisible(true);
-													}}
-												>
-													<View style={styles.streamingImageContainer}>
-														<Image
-															source={streamingLogos[streamingName]}
-															style={styles.streamingImage}
-														/>
-													</View>
-													<View style={styles.streamingPlans}>
-														<Text style={styles.streaming}>
-															{streamingName}
-														</Text>
-														<Text style={styles.plan}>{sub.name}</Text>
-
-														<Text
-															style={{
-																color: '#888',
-																fontSize: 9,
-																fontFamily: 'Poppins-Light',
-															}}
-														>
-															Assinada em: {sub.dataAssinada}
-														</Text>
-													</View>
-													<View style={styles.priceContainer}>
-														<Text style={styles.price}>
-															R${' '}
-															{Number(sub.preço).toFixed(2).replace('.', ',')}
-														</Text>
-													</View>
-												</TouchableOpacity>
-											);
-										})
-								) : (
-									<Text
-										style={{
-											textAlign: 'center',
-											color: '#888',
-											marginTop: 20,
-										}}
-									>
-										Você ainda não possui assinaturas cadastradas.
-									</Text>
-								)}
-							</View>
-						</ScrollView>
+													plan={sub}
+													streamingName={getStreamingNameByPlanId(sub.id)}
+												/>
+											))
+									) : (
+										<View style={styles.noSignatures}>
+											<Image
+												source={require('../../assets/noSignatures.png')}
+												style={styles.noSignaturesImage}
+											></Image>
+											<Text
+												style={{
+													textAlign: 'center',
+													color: '#411260',
+													fontFamily: 'Poppins-Medium',
+													fontSize: 15,
+													marginTop: 20,
+													width: 250,
+												}}
+											>
+												Err... Não tem nenhuma assinatura aqui...
+											</Text>
+										</View>
+									)}
+								</View>
+							</ScrollView>
+						</View>
 					</View>
 				</ScrollView>
 			</View>

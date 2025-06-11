@@ -8,7 +8,7 @@ import theme from '../theme';
 import { registerRequest } from '../services/httpsRequests';
 
 const text_logo = require('../../assets/text_logo.png');
-const flat_image = require('../../assets/flat-design1.png');
+const flat_image = require('../../assets/cadastro.png');
 
 export default function Register({ navigation }: any) {
 	const [username, setUsername] = useState('');
@@ -18,6 +18,8 @@ export default function Register({ navigation }: any) {
 	const [showPassword, setShowPassword] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
 	const hasEmailErrors = () => !email.includes('@');
 	const hasPasswordErrors = () => password.length < 6;
@@ -80,24 +82,30 @@ export default function Register({ navigation }: any) {
 									theme={theme}
 									mode="outlined"
 									label="Nome de Usuário"
+									style={{ marginBottom: 7 }}
 									value={username}
 									onChangeText={setUsername}
 								/>
-								<HelperText type="error" visible={false}>
-									Nome de usuário inválido!
-								</HelperText>
+								{username.trim() === '' && error !== '' && (
+									<HelperText type="error" visible={true}>
+										Nome de usuário inválido!
+									</HelperText>
+								)}
 							</View>
 							<View>
 								<TextInput
 									theme={theme}
 									mode="outlined"
 									label="Email"
+									style={{ marginBottom: 7 }}
 									value={email}
 									onChangeText={setEmail}
 								/>
-								<HelperText type="error" visible={!!email && hasEmailErrors()}>
-									Email inválido!
-								</HelperText>
+								{hasEmailErrors() && email.trim() !== '' && (
+									<HelperText type="error" visible={true}>
+										Email inválido!
+									</HelperText>
+								)}
 							</View>
 
 							<View>
@@ -105,6 +113,7 @@ export default function Register({ navigation }: any) {
 									theme={theme}
 									mode="outlined"
 									label="Senha"
+									style={{ marginBottom: 7 }}
 									secureTextEntry={!showPassword}
 									right={
 										<TextInput.Icon
@@ -115,28 +124,35 @@ export default function Register({ navigation }: any) {
 									value={password}
 									onChangeText={setPassword}
 								/>
-								<HelperText
-									type="error"
-									visible={!!password && hasPasswordErrors()}
-								>
-									Senha inválida!
-								</HelperText>
+								{hasPasswordErrors() && password !== '' && (
+									<HelperText type="error" visible={true}>
+										Senha inválida! (mínimo 6 caracteres)
+									</HelperText>
+								)}
 							</View>
 							<View>
 								<TextInput
 									theme={theme}
 									mode="outlined"
 									label="Confirme sua senha"
-									secureTextEntry
+									style={{ marginBottom: 26 }}
+									secureTextEntry={!showConfirmPassword}
+									right={
+										<TextInput.Icon
+											icon={showConfirmPassword ? 'eye-off' : 'eye'}
+											onPress={() =>
+												setShowConfirmPassword(!showConfirmPassword)
+											}
+										/>
+									}
 									value={confirmPassword}
 									onChangeText={setConfirmPassword}
 								/>
-								<HelperText
-									type="error"
-									visible={!!confirmPassword && hasConfirmPasswordErrors()}
-								>
-									As senhas não coincidem!
-								</HelperText>
+								{hasConfirmPasswordErrors() && confirmPassword !== '' && (
+									<HelperText type="error" visible={true}>
+										As senhas não coincidem!
+									</HelperText>
+								)}
 							</View>
 							{error ? (
 								<Text

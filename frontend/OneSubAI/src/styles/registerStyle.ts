@@ -23,8 +23,8 @@ const styles = StyleSheet.create({
 		marginBottom: 50,
 	},
 	image: {
-		width: 330 / 2,
-		height: 237 / 2,
+		width: 330,
+		height: 178
 	},
 	formContainer: {
 		flex: 1,

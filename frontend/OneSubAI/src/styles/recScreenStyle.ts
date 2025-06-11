@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
 		color: theme.colors.accent,
 		fontFamily: 'Poppins-Medium',
 		fontSize: 17,
-		textDecorationLine: 'underline',
 	},
 	emptyMessage: {
 		flex: 1,

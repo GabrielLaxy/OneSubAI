@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { View, ScrollView, Text, StyleSheet, Image } from 'react-native';
-import { Button, Card } from 'react-native-paper';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { useState } from 'react';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Button, Card } from 'react-native-paper';
 
-import { getInitialMovies } from '../services/httpsRequests';
 import { useMovies } from '../contexts/moviesContext';
 import { useUserContext } from '../contexts/userContext';
+import { getInitialMovies } from '../services/httpsRequests';
 
 import theme from '../theme';
 
@@ -27,9 +27,9 @@ export default function PlansScreen({ navigation }: any) {
 			<ScrollView contentContainerStyle={styles.content}>
 				<Text style={styles.subtitle}>
 					Encontre seu próximo filme {'\n'}
-					<Text style={styles.bold}>
-						preferido usando Inteligência{'\n'}Artificial
-					</Text>
+					<Text style={styles.bold}>preferido</Text>
+					<Text style={styles.subtitle}> usando </Text>
+					<Text style={styles.bold}>Inteligência{'\n'}Artificial</Text>
 				</Text>
 				<Card style={styles.card}>
 					<Card.Content style={styles.cardContent}>
@@ -195,30 +195,33 @@ const styles = StyleSheet.create({
 		fontFamily: 'Poppins-Bold',
 	},
 	card: {
+		padding: 10,
 		borderRadius: 16,
 		marginBottom: 24,
 		overflow: 'hidden',
+		backgroundColor: theme.colors.accent,
 	},
 	cardContent: {
 		paddingVertical: 16,
 		paddingHorizontal: 20,
+		backgroundColor: theme.colors.accent,
 	},
 	cardHeader: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		marginBottom: 12,
-		gap: 10,
+		marginBottom: 17,
+		gap: 15,
 	},
 	planIcon: {
-		width: 450 / 15,
-		height: 687 / 15,
+		width: 26,
+		height: 42,
 	},
 	planIcon2: {
-		width: 592 / 15,
-		height: 687 / 15,
+		width: 39,
+		height: 45.8,
 	},
 	planTitle: {
-		fontSize: 30,
+		fontSize: 27,
 		fontFamily: 'Poppins-Bold',
 	},
 	benefit: {

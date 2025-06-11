@@ -156,6 +156,18 @@ const styles = StyleSheet.create({
 		fontFamily: 'Poppins-SemiBold',
 		fontSize: 20,
 	},
+
+	noSignatures: {
+		flex: 1,
+		justifyContent: 'flex-end',
+		alignItems: 'center',
+		paddingVertical: 40
+	},
+
+	noSignaturesImage: {
+		width: 140,
+		height: 140,
+	},
 });
 
 export default styles;

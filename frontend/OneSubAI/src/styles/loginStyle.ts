@@ -84,6 +84,11 @@ const styles = StyleSheet.create({
 		fontFamily: 'Poppins-SemiBold',
 		color: theme.colors.primary,
 		textDecorationLine: 'underline',
+	},
+
+	flatImage:{
+		width: 330,
+		height: 237
 	}
 });
 

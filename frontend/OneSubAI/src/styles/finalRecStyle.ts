@@ -44,15 +44,15 @@ const styles = StyleSheet.create({
 	overviewContainer: {
 		width: posterWidth,
 		height: 150,
-		borderRadius: 20,
+		borderRadius: 10,
 		marginTop: 20,
 		overflow: 'hidden',
-		backgroundColor: theme.colors.primary,
+		backgroundColor: theme.colors.background,
 	},
 	overview:{
 		fontFamily: 'Poppins-Regular',
 		fontSize: 14,
-		color: theme.colors.accent,
+		color: theme.colors.text,
 		textAlign: 'justify',
 		paddingVertical: 1,
 	}

@@ -15,7 +15,7 @@ import { useUserContext } from '../contexts/userContext';
 import styles from '../styles/homeStyle';
 import theme from '../theme';
 
-type FilterType = 'year' | 'months' | 'days';
+type FilterType = 'anos' | 'meses' | 'dias';
 type Plano = {
 	id: number;
 	dataAssinada: string;
@@ -25,7 +25,7 @@ type Plano = {
 };
 
 export default function Home() {
-	const [filter, setFilter] = useState<FilterType>('year');
+	const [filter, setFilter] = useState<FilterType>('anos');
 	const [selectedBarIndex, setSelectedBarIndex] = useState<number | null>(null);
 	const { user } = useUserContext();
 	const planos = user?.planos || [];
@@ -117,9 +117,9 @@ export default function Home() {
 	const gastosUltimos5Dias = calcularGastosUltimosDias(planos, 5);
 
 	const data: Record<FilterType, number[]> = {
-		year: gastosUltimos5Anos,
-		months: gastosUltimos5Meses,
-		days: gastosUltimos5Dias,
+		anos: gastosUltimos5Anos,
+		meses: gastosUltimos5Meses,
+		dias: gastosUltimos5Dias,
 	};
 
 	const getLastFiveDaysLabels = () => {
@@ -162,9 +162,9 @@ export default function Home() {
 	};
 
 	const labelsByFilter: Record<FilterType, string[]> = {
-		year: getLastFiveYearsLabels(),
-		months: getLastFiveMonthsLabels(),
-		days: getLastFiveDaysLabels(),
+		anos: getLastFiveYearsLabels(),
+		meses: getLastFiveMonthsLabels(),
+		dias: getLastFiveDaysLabels(),
 	};
 
 	// Configurações do gráfico
@@ -335,13 +335,13 @@ export default function Home() {
 				<View style={styles.secondLayer}>
 					<View style={styles.dashboard}>
 						<View style={styles.dashboardTexts}>
-							<Text style={styles.dashboardParagraph}>Dashboard</Text>
-							<Text style={styles.dashboardTitle}>Expenses</Text>
+							<Text style={styles.dashboardParagraph}>Painel</Text>
+							<Text style={styles.dashboardTitle}>Gastos</Text>
 						</View>
 
 						<View style={styles.dashboardLabels}>
 							<View style={styles.graphic}>
-								{(['year', 'months', 'days'] as FilterType[]).map(item => (
+								{(['anos', 'meses', 'dias'] as FilterType[]).map(item => (
 									<TouchableOpacity
 										key={item}
 										onPress={() => setFilter(item)}
@@ -541,9 +541,9 @@ export default function Home() {
 
 					<View style={styles.subscribes}>
 						<View style={styles.subscribesTexts}>
-							<Text style={styles.subscribesTitle}>Your Subscribes &gt;</Text>
+							<Text style={styles.subscribesTitle}>Suas assinaturas &gt;</Text>
 							<Text style={styles.subscribesParagraph}>
-								You have {user.planos.length} subscriptions
+								Você tem {user.planos.length} assinaturas
 							</Text>
 						</View>
 						<ScrollView

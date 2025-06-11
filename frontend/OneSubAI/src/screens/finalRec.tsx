@@ -96,7 +96,7 @@ export default function FinalRec() {
 									/>
 								</View>
 								<View style={styles.overviewContainer}>
-									<ScrollView>
+									<ScrollView showsVerticalScrollIndicator={true}>
 										<View style={{ padding: 16 }}>
 											<Text style={styles.overview}>
 												{finalMovie?.overview}

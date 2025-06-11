@@ -32,13 +32,16 @@ const styles = StyleSheet.create({
 	},
 
 	dashboardTexts: {
-		padding: 20,
+		paddingHorizontal: 20,
+		paddingTop: 20,
+		paddingBottom: 10
 	},
 
 	dashboardParagraph: {
 		fontSize: 15,
 		color: theme.colors.labels,
 		fontFamily: 'Poppins-Regular',
+		marginBottom: -10
 	},
 
 	dashboardTitle: {
@@ -48,7 +51,7 @@ const styles = StyleSheet.create({
 
 	dashboardLabels: {
 		gap: 50,
-		paddingBottom: 40,
+		paddingBottom: 10,
 		paddingHorizontal: 20,
 	},
 
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
 
 	labelBase: {
 		paddingVertical: 6,
-		paddingHorizontal: 24,
+		paddingHorizontal: 27,
 		borderRadius: 20,
 		borderColor: theme.colors.dashboardBorder,
 		borderWidth: 1,
