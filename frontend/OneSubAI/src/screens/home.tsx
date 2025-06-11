@@ -543,7 +543,7 @@ export default function Home() {
 						<View style={styles.subscribesTexts}>
 							<Text style={styles.subscribesTitle}>Suas assinaturas &gt;</Text>
 							<Text style={styles.subscribesParagraph}>
-								Você tem {user.planos.length} assinaturas
+								Você tem {user?.planos?.length ?? 0} assinaturas
 							</Text>
 						</View>
 						<ScrollView

@@ -8,12 +8,13 @@ import {
 } from 'react-native';
 import { HelperText, TextInput, Button } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import styles from '../styles/loginStyle';
 import theme from '../theme';
-import { loginRequest } from '../services/httpsRequests'; 
-import { useUserContext } from '../contexts/userContext'; 
+import { loginRequest } from '../services/httpsRequests';
+import { useUserContext } from '../contexts/userContext';
+import LottieView from 'lottie-react-native';
 
 const text_logo = require('../../assets/text_logo.png');
 const flat_image = require('../../assets/login.png');
@@ -25,6 +26,7 @@ export default function Login({ navigation }: any) {
 	const [loading, setLoading] = useState(false);
 	const [loginError, setLoginError] = useState('');
 	const { setUser } = useUserContext(); // adicione este hook
+	const [showAnimation, setShowAnimation] = useState(false);
 
 	const hasPasswordErrors = () => password.length > 0 && password.length < 4;
 	const hasEmailErrors = () => email.length > 0 && !email.includes('@');
@@ -43,12 +45,30 @@ export default function Login({ navigation }: any) {
 		const response = await loginRequest(email, password);
 		setLoading(false);
 		if (response && response.success) {
-			setUser(response.user); 
-			navigation.navigate('TabRoutes');
+			setUser(response.user); // << Atualiza o contexto do usuário aqui
+			setShowAnimation(true);
+			setTimeout(() => {
+				navigation.navigate('TabRoutes');
+			}, 3000);
 		} else {
 			setLoginError('Email ou senha incorretos.');
 		}
 	};
+
+	if (showAnimation) {
+		return (
+			<View style={{ flex: 1, backgroundColor: 'black' }}>
+				<StatusBar hidden />
+				<LottieView
+					source={require('../../assets/animacao.json')}
+					autoPlay
+					loop={false}
+					style={{ flex: 1 }}
+					resizeMode="cover"
+				/>
+			</View>
+		);
+	}
 
 	return (
 		<View style={styles.container}>
@@ -72,7 +92,7 @@ export default function Login({ navigation }: any) {
 								Entre já para gerenciar suas assinaturas
 							</Text>
 						</View>
-						<View style={{gap:10}}>
+						<View style={{ gap: 10 }}>
 							<TextInput
 								theme={theme}
 								mode="outlined"

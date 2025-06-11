@@ -2,7 +2,6 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button, Card } from 'react-native-paper';
-
 import { useMovies } from '../contexts/moviesContext';
 import { useUserContext } from '../contexts/userContext';
 import { getInitialMovies } from '../services/httpsRequests';

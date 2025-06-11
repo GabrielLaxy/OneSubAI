@@ -8,7 +8,9 @@ const styles = StyleSheet.create({
 	},
 	scrollViewContent: {
 		flexGrow: 1,
+		justifyContent: 'flex-start', // deixa conteúdo no topo
 	},
+
 	flexOne: {
 		flex: 1,
 	},
@@ -79,17 +81,17 @@ const styles = StyleSheet.create({
 		fontFamily: 'Poppins-Light',
 		color: '#6E6E6E',
 	},
-	footerTextButton:{
+	footerTextButton: {
 		fontSize: 14,
 		fontFamily: 'Poppins-SemiBold',
 		color: theme.colors.primary,
 		textDecorationLine: 'underline',
 	},
 
-	flatImage:{
+	flatImage: {
 		width: 330,
-		height: 237
-	}
+		height: 237,
+	},
 });
 
 export default styles;
