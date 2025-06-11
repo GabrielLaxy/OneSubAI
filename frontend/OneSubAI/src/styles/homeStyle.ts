@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
 
 	labelBase: {
 		paddingVertical: 6,
-		paddingHorizontal: 17,
+		paddingHorizontal: 24,
 		borderRadius: 20,
 		borderColor: theme.colors.dashboardBorder,
 		borderWidth: 1,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
 	},
 
 	scaleContainer: {
-		width: 40,
+		width: 50,
 		justifyContent: 'space-between',
 		height: 150,
 	},
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
 
 	dashValue: {
 		position: 'absolute',
-		left: -55,
+		left: -63,
 		fontSize: 12,
 		fontFamily: 'Poppins-Bold',
 		transform: [{ translateX: -2.8 }, { translateY: -10 }],
